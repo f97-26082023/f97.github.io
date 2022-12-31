@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+
+    <meta name="author" content="f97">
+
+
+    <meta name="subtitle" content="f97 (f97)">
+
+
+    <meta name="description" content="Mình là Khoản! <br/> Kỹ sư mặt tiền ở một thành phố nhỏ xíu ở miền trung Việt Nam [(xem thêm)](/about)">
+
+
+    <meta name="keywords" content="f97, dev">
+
+
+    <title>[Hooks] [Hooks ký sự] useContext và useReducer  | f97.xyz</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js" ></script>
+    
+    <script src="/js/tocbot.min.js" ></script>
+    
+
+
+
+    <link href="https://wancharle.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+
+
+
+    
+    
+        
+    
+
+
+
+
+<!-- hexo injector head_end start --><link rel="manifest" href="/manifest.json" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">f97.xyz</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">f97.xyz</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <script>
+                // this function is used to check current theme before page loaded.
+                (() => {
+                    let currentTheme = window.localStorage && window.localStorage.getItem('theme');
+                    if (!currentTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        currentTheme = 'dark';
+                    }
+                    const isDark = currentTheme === 'dark';
+                    const pagebody = document.getElementsByTagName('body')[0]
+                    if (isDark) {
+                        pagebody.classList.add('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+                    } else {
+                        pagebody.classList.remove('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Light"
+                    }
+                })();
+            </script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">[Hooks] [Hooks ký sự] useContext và useReducer </h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">f97</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">22-06-2022</a>
+                        </span>
+                    
+                    
+
+                    
+                </div>
+            
+        </header>
+
+            
+                <div class="post-content ">
+            
+            <p>#Aizz, #Aizz… Chỉ có 13 hooks thôi mà sao nó lâu thế nhỉ :((((</p>
+<h2 id="useContext-context"><a href="#useContext-context" class="headerlink" title="useContext(context)"></a>useContext(context)</h2><h3 id="Khai-niem"><a href="#Khai-niem" class="headerlink" title="Khái niệm"></a>Khái niệm</h3><p>À, useContext được xếp vào basic hooks nhé</p>
+<blockquote>
+<p>Accepts a context object (the value returned from React.createContext) and returns the current context value for that context. The current context value is determined by the value prop of the nearest &lt;MyContext.Provider&gt; above the calling component in the tree.</p>
+</blockquote>
+<h3 id="Chuc-nang"><a href="#Chuc-nang" class="headerlink" title="Chức năng"></a>Chức năng</h3><p>Tương tự useState, useContext là một hooks giúp chúng ta có thể làm việc với react context trong một functional component. </p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// class component</span></span><br><span class="line"><span class="keyword">const</span> value = <span class="variable language_">this</span>.<span class="property">context</span>;</span><br><span class="line"><span class="comment">// functional compoent </span></span><br><span class="line"><span class="keyword">const</span> value = <span class="title function_">useContext</span>(<span class="title class_">AppContext</span>);</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="Vi-du"><a href="#Vi-du" class="headerlink" title="Ví dụ"></a>Ví dụ</h3><p>Hí hí, vẫn là ví dụ truyền thống của chuỗi series này nên ví du nó có nhảm thế nào đi nữa thì các bạn cũng đừng để ý =))) : </p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> { useState, createContext, useContext } <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">CountContext</span> = <span class="title function_">createContext</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Troll</span> = (<span class="params"></span>) =&gt; {</span><br><span class="line">  <span class="keyword">const</span> count = <span class="title function_">useContext</span>(<span class="title class_">CountContext</span>);</span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">troll</span> = (<span class="params">_count</span>) =&gt; {</span><br><span class="line">    <span class="keyword">let</span> _result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> _i = <span class="number">0</span>; _i &lt; _count * <span class="number">500000000</span>; _i++) {</span><br><span class="line">      _result += _i;</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> _result;</span><br><span class="line">  };</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>count: {count}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>troll: {troll(count)}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>) {</span><br><span class="line">  <span class="keyword">const</span> [count, setCount] = <span class="title function_">useState</span>(<span class="number">1</span>);</span><br><span class="line">  <span class="keyword">const</span> [randomID, setRandomID] = <span class="title function_">useState</span>();</span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">updateCount</span> = (<span class="params"></span>) =&gt; <span class="title function_">setCount</span>(count + <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">CountContext.Provider</span> <span class="attr">value</span>=<span class="string">{count}</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello CodeSandbox<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">{()</span> =&gt;</span> updateCount()}&gt;+<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Troll</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">{()</span> =&gt;</span> setRandomID(Math.round(Math.random() * 10))}&gt;</span></span><br><span class="line"><span class="language-xml">        random</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>randomID: {randomID}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">CountContext.Provider</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Các bạn thấy đó, component <code>&lt;Troll /&gt;</code> của mình hiện tại không truyền count vào như ở ví dụ <a href="/usememo-va-usecallback/#Vi-du-1">usememo-va-usecallback</a> nhưng nó vẫn hoạt động tốt đúng không nào :3 </p>
+<h2 id="useReducer-state-action"><a href="#useReducer-state-action" class="headerlink" title="useReducer(state, action)"></a>useReducer(state, action)</h2><p>Chắc bây giờ các bạn đang nhảy số trong đầu, tại sao <code>useReducer</code> lại được xếp chung buổi với useContext đúng không nào. Và câu trả lời là: <em>- Vì mình thích</em> =))) Thật ra thì nên để nó nằm chung với <code>useState</code> nhưng mà mình thích để <code>useState</code> với <code>useRef</code> hơn :3 </p>
+<h3 id="Khai-niem-1"><a href="#Khai-niem-1" class="headerlink" title="Khái niệm"></a>Khái niệm</h3><blockquote>
+<p>An alternative to <code>useState</code>. Accepts a reducer of type (state, action) =&gt; newState, and returns the current state paired with a dispatch method. (If you’re familiar with Redux, you already know how this works.)</p>
+</blockquote>
+<h3 id="Chuc-nang-1"><a href="#Chuc-nang-1" class="headerlink" title="Chức năng"></a>Chức năng</h3><p>Cũng được dùng để quản lý state giống như <code>useState</code> thôi, nhưng thay vì trả về <code>state</code>, và <code>setState</code> giống như <code>useState</code> thì nó trả về như thế nầy đây.</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> [state, dispatch] = <span class="title function_">useReducer</span>(reducer, initialState);</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="Vi-du-1"><a href="#Vi-du-1" class="headerlink" title="Ví dụ"></a>Ví dụ</h3><p>Tất nhiên là với một hooks có chức năng tương tự <code>useState</code> thì mình sẽ lấy ví dụ ở <a href="/usestate-va-useref/#Vi-du">Ví dụ useState</a>:</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> { useState, useReducer } <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">countReducer</span> = (<span class="params">count, action</span>) =&gt; {</span><br><span class="line">  <span class="keyword">switch</span> (action.<span class="property">type</span>) {</span><br><span class="line">    <span class="keyword">case</span> <span class="string">"INCREASE"</span>:</span><br><span class="line">      <span class="keyword">return</span> count + <span class="number">1</span>;</span><br><span class="line">    <span class="attr">default</span>:</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>();</span><br><span class="line">  }</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>) {</span><br><span class="line">  <span class="keyword">const</span> [count, countDispatch] = <span class="title function_">useReducer</span>(countReducer, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">const</span> [randomID, setRandomID] = <span class="title function_">useState</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">troll</span> = (<span class="params">_count</span>) =&gt; {</span><br><span class="line">    <span class="keyword">let</span> _result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> _i = <span class="number">0</span>; _i &lt; _count * <span class="number">500000000</span>; _i++) {</span><br><span class="line">      _result += _i;</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> _result;</span><br><span class="line">  };</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">"App"</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello CodeSandbox<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">{()</span> =&gt;</span> countDispatch({ type: "INCREASE" })}&gt;+<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>count: {count}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">{()</span> =&gt;</span> setRandomID(Math.round(Math.random() * 10))}&gt;</span></span><br><span class="line"><span class="language-xml">        random</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>randomID: {randomID}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>troll: {troll(count)}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Và tất nhiên chức năng nó cũng chả khác gì so với ví dụ ở useState cả :3 </p>
+<h2 id="Ket-hop-giua-useContext-voi-useReducer"><a href="#Ket-hop-giua-useContext-voi-useReducer" class="headerlink" title="Kết hợp giữa useContext với useReducer"></a>Kết hợp giữa <code>useContext</code> với <code>useReducer</code></h2><p>Hí hí, riêng bài này thì mình không so sánh giữa <code>useContext</code> với <code>useReducer</code>, vì nó có điểm chung gì đâu mà so sánh… Nhưng mà mình sẽ ví dụ cách kết hợp giữa 2 bọn nó để đánh bật redux ra khỏi thế giới <em>(Hoặc không)</em> =)))</p>
+<p>Định viết nhưng nó dài quá, thôi mình sẽ để ở bài viết khác nhé :3 </p>
+<h2 id="Ket-luan"><a href="#Ket-luan" class="headerlink" title="Kết luận"></a>Kết luận</h2><p><code>useContext</code> và <code>useReducer</code> có cảm giác như chẳng liên quan gì đến nhau nhưng nếu dùng chung với nhau một cách hợp lý, bạn có thể “fake” <code>redux</code> ở một khía cạnh nào đó, mình sẽ cố gắng viết bài này sớm nhất trong phạm vi có thể. Chắc chắn là sẽ sau series <a href="/tags/hooks-ky-su">hooks ký sự</a>.</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>f97</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://f97.xyz/usecontext-va-usereducer.html">https://f97.xyz/usecontext-va-usereducer.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="f97/f97.github.io"
+        data-repo-id="R_kgDOIXlxcQ"
+        data-category="Q&A"
+        data-category-id="DIC_kwDOIXlxcc4CSy5E"
+        data-mapping="url"
+        data-strict="1"
+        data-reactions-enabled="0"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="vi"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<div class="giscus" style="margin-top: 14px;"></div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/tech/"># tech</a>
+                        
+                            <a href="/tags/hooks-ky-su/"># hooks ký sự</a>
+                        
+                    
+                    <a href="/tags"># all-tags</a>
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© f97 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/f97/chic" target="_blank">@f97/chic</a></span>
+    </div>
+</footer>
+
+    </div>
+<!-- hexo injector body_end start --><script>
+// Check that service workers are supported
+if ('serviceWorker' in navigator) {
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+<!-- hexo injector body_end end --></body>
+
+</html>

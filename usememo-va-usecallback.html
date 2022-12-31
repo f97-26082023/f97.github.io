@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+
+    <meta name="author" content="f97">
+
+
+    <meta name="subtitle" content="f97 (f97)">
+
+
+    <meta name="description" content="Mình là Khoản! <br/> Kỹ sư mặt tiền ở một thành phố nhỏ xíu ở miền trung Việt Nam [(xem thêm)](/about)">
+
+
+    <meta name="keywords" content="f97, dev">
+
+
+    <title>[Hooks] [Hooks ký sự] useMemo và useCallback | f97.xyz</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js" ></script>
+    
+    <script src="/js/tocbot.min.js" ></script>
+    
+
+
+
+    <link href="https://wancharle.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+
+
+
+    
+    
+        
+    
+
+
+
+
+<!-- hexo injector head_end start --><link rel="manifest" href="/manifest.json" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">f97.xyz</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">f97.xyz</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <script>
+                // this function is used to check current theme before page loaded.
+                (() => {
+                    let currentTheme = window.localStorage && window.localStorage.getItem('theme');
+                    if (!currentTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        currentTheme = 'dark';
+                    }
+                    const isDark = currentTheme === 'dark';
+                    const pagebody = document.getElementsByTagName('body')[0]
+                    if (isDark) {
+                        pagebody.classList.add('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+                    } else {
+                        pagebody.classList.remove('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Light"
+                    }
+                })();
+            </script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">[Hooks] [Hooks ký sự] useMemo và useCallback</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">f97</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">19-06-2022</a>
+                        </span>
+                    
+                    
+
+                    
+                </div>
+            
+        </header>
+
+            
+                <div class="post-content ">
+            
+            <p>Đang trong những ngày “after GAP” thì tình trạng hiện tại của mình chính xác là thất nghiệp vì chưa tìm được công việc phù hợp với bản thân nên vừa học lại, vừa chia sẻ một số kĩ năng đã biết cho mọi người cũng như một cách để hệ thống hoá lại kiến thức của bạn thân.</p>
+<p>Và series này là series [Hooks ký sự], mình sẽ lần lượt trình bày các hook của react.js<span class="github-emoji"><span>😏</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></p>
+<h2 id="useMemo-fn-deps"><a href="#useMemo-fn-deps" class="headerlink" title="useMemo(fn, deps)"></a>useMemo(fn, deps)</h2><h3 id="Khai-niem"><a href="#Khai-niem" class="headerlink" title="Khái niệm"></a>Khái niệm</h3><blockquote>
+<p>Returns a memoized value.</p>
+</blockquote>
+<p>Khái niệm của useMemo rất đơn giản đúng không nào, tham số thứ nhất là một func và tham số thứ hai là mảng chứa các dependencies và nó sẽ trả về giá trị đã được ghi nhớ (là kết quả trả về từ việc chạy hàm fn mà bạn truyền vào ứng với tham số).</p>
+<h3 id="Chuc-nang"><a href="#Chuc-nang" class="headerlink" title="Chức năng"></a>Chức năng</h3><p>useMemo chủ yếu được sử dụng để giải quyết các bài toán với nhiều logic nặng để tránh lặp lại các giá trị cũ.</p>
+<p><em>“Nếu một trong số các dependencies thay đổi, thì hàm tính toán sẽ được thực thi lại, từ đó trả ra giá trị mới. Ngược lại, nếu nhận thấy giá trị của các dependencies kia không đổi, thì ngay lập tức useMemo trả ra kết quả trước đó mà không hề tính toán lại, từ đó tránh được một khối lượng lớn công việc, giúp ích cho performance.”</em></p>
+<h3 id="Vi-du"><a href="#Vi-du" class="headerlink" title="Ví dụ"></a>Ví dụ</h3><p>Tưởng tượng bạn có function troll như bên dưới, chức năng của troll là mỗi khi count thay đổi thì mọi thứ sẽ được for đến chết… Tốc độ thì mình xin hứa với đảng là mỗi khi count change sẽ khiến máy đứng hình một vài giây <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> </p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>) {</span><br><span class="line">  <span class="keyword">const</span> [count, setCount] = <span class="title function_">useState</span>(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">const</span> [randomID, setRandomID] = <span class="title function_">useState</span>();</span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">troll</span> = (<span class="params">_count</span>) =&gt; {</span><br><span class="line">    <span class="keyword">let</span> _result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> _i = <span class="number">0</span>; _i &lt; _count * <span class="number">500000000</span>; _i++) {</span><br><span class="line">      _result += _i;</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> _result;</span><br><span class="line">  };</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">"App"</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello CodeSandbox<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">{()</span> =&gt;</span> setCount(count + 1)}&gt;+<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>count: {count}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">{()</span> =&gt;</span> setRandomID(Math.round(Math.random() * 10))}&gt;</span></span><br><span class="line"><span class="language-xml">        random</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>randomID: {randomID}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>troll: {troll(count)}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>Và nhìn hình bạn sẽ thấy, dù count không thay đổi nhưng khi mình random thì mọi thứ trở nên thật kinh dị, mình chỉ muốn lấy kết quả random nhưng lúc re-render thì lại phải tính toán lại đống troll của mình <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> </p>
+<p><img src="https://s8.gifyu.com/images/CPT2206191140-453x214.gif" alt="https://s8.gifyu.com/images/CPT2206191140-453x214.gif"></p>
+<p>Và mình chắc chắn bạn cũng như mình, sẽ không thích điều này… Từ đó chắc chắn mình sẽ cần tới memo<span class="github-emoji"><span>😏</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span><span class="github-emoji"><span>😏</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> Code được viết đơn giản lại thành như thế này</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">troll</span> = (<span class="params">_count</span>) =&gt; {</span><br><span class="line">  <span class="keyword">let</span> _result = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> _i = <span class="number">0</span>; _i &lt; _count * <span class="number">500000000</span>; _i++) {</span><br><span class="line">    _result += _i;</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span> _result;</span><br><span class="line">};</span><br><span class="line"><span class="keyword">const</span> trollWithMemo = <span class="title function_">useMemo</span>(<span class="function">() =&gt;</span> <span class="title function_">troll</span>(count), [count]);</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://s8.gifyu.com/images/CPT2206191143-453x214.gif" alt="https://s8.gifyu.com/images/CPT2206191143-453x214.gif"></p>
+<p>Và nhìn hình bạn sẽ thấy, phép màu đã xuất hiện <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>   Và tới đây chắc bạn cũng đã hiểu sơ sơ về useMemo rồi đúng không <em>(Hoặc nếu bạn không hiểu thì kệ bạn <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></em></p>
+<p>Hì hì, ngoài ra dựa vào việc không phải tính toán lại cũng tránh được trường hợp function này sẽ thay đổi hoặc tạo ra một cái gì đó không thú dị <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> </p>
+<h3 id="Mot-chut-ve-React-Memo"><a href="#Mot-chut-ve-React-Memo" class="headerlink" title="Một chút về React.Memo"></a>Một chút về React.Memo</h3><p>Đơn giản là React.Memo ra để giải quyết các vấn đề liên quan đến re-render vô tội vạ, giải quyết vấn đề như PureComponent hoặc shouldComponentUpdate ở class component thôi. Chức năng của nó là kiểm tra nông xem props có thay đổi hay không, nếu như không thay đổi thì không cần re-render làm gì cho mất công. Phạm vi bài viết này mình chỉ muốn nhắc tới thôi, thật ra useMemo thì lấy lại kết quả cũ nếu tham số đầu vào không thay đổi còn React.me thì sẽ lấy lại component đã render cũ nếu props không thay đổi.</p>
+<h2 id="useCallback-fn-deps"><a href="#useCallback-fn-deps" class="headerlink" title="useCallback(fn, deps)"></a>useCallback(fn, deps)</h2><h3 id="Khai-niem-1"><a href="#Khai-niem-1" class="headerlink" title="Khái niệm"></a>Khái niệm</h3><blockquote>
+<p>useCallback thì tập trung giải quyết vấn đề về performance, khi mà các callback function được tạo ở functional component cha pass xuống component con luôn bị tạo mới, khiến cho con luôn bị re-render.</p>
+</blockquote>
+<h3 id="Chuc-nang-1"><a href="#Chuc-nang-1" class="headerlink" title="Chức năng"></a>Chức năng</h3><p>Nhưng khác với useMemo thì useCallback lại trả về một function, và function này sẽ chỉ được tạo lại khi một trong số các dependencies thay đổi. Nếu dependencies không đổi, function trả về sẽ là function trước đó -&gt; tức là function pass xuống component con không bị tạo mới, tương đương không có object được tạo mới -&gt; component con không bị re-render.</p>
+<h3 id="Vi-du-1"><a href="#Vi-du-1" class="headerlink" title="Ví dụ"></a>Ví dụ</h3><p>Tương tự ví dụ trên và chúng ta có tốc độ load siêu khủng khiếp <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> </p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> { useState, memo } <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Troll</span> = <span class="title function_">memo</span>(<span class="function">(<span class="params">{ count, updateCount }</span>) =&gt;</span> {</span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">troll</span> = (<span class="params">_count</span>) =&gt; {</span><br><span class="line">    <span class="keyword">let</span> _result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> _i = <span class="number">0</span>; _i &lt; _count * <span class="number">500000000</span>; _i++) {</span><br><span class="line">      _result += _i;</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> _result;</span><br><span class="line">  };</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">{()</span> =&gt;</span> updateCount()}&gt;+<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>count: {count}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>troll: {troll(count)}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">});</span><br><span class="line"> </span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>) {</span><br><span class="line">  <span class="keyword">const</span> [count, setCount] = <span class="title function_">useState</span>(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">const</span> [randomID, setRandomID] = <span class="title function_">useState</span>();</span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">updateCount</span> = (<span class="params"></span>) =&gt; <span class="title function_">setCount</span>(count + <span class="number">1</span>);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">"App"</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello CodeSandbox<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Troll</span> <span class="attr">count</span>=<span class="string">{count}</span> <span class="attr">updateCount</span>=<span class="string">{(updateCount)}</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">{()</span> =&gt;</span> setRandomID(Math.round(Math.random() * 10))}&gt;</span></span><br><span class="line"><span class="language-xml">        random</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>randomID: {randomID}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>Và vẫn như cũ, khi chúng ta random number thì function updateCount lại được tạo mới và pass xuống Troll, nên dù mình đã dùng React.memo nhưng mọi thứ vẫn chậm như hình:</p>
+<p><img src="https://s8.gifyu.com/images/CPT2206191722-786x214.gif" alt="https://s8.gifyu.com/images/CPT2206191722-786x214.gif"></p>
+<p>Và với một thao tác viết lại function useCallback đơn giản như sau:</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> updateCount = <span class="title function_">useCallback</span>(<span class="function">() =&gt;</span> {</span><br><span class="line">    <span class="title function_">setCount</span>(count + <span class="number">1</span>);</span><br><span class="line">}, [count])</span><br></pre></td></tr></tbody></table></figure>
+<p>tốc độ đã được cải thiện đáng kể khi chúng ta không đụng đến count:</p>
+<p><img src="https://s8.gifyu.com/images/CPT2206191726-786x214.gif" alt="https://s8.gifyu.com/images/CPT2206191726-786x214.gif"></p>
+<p>Chỉ với một vài thao tác đơn giản, chúng ta đã biến tốc độ của một cái app siêu chậm đã nhanh hơn một tẹo nào đó<span class="github-emoji"><span>😏</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></p>
+<h2 id="So-sanh-giua-useMemo-vs-useCallback"><a href="#So-sanh-giua-useMemo-vs-useCallback" class="headerlink" title="So sánh giữa useMemo vs useCallback"></a>So sánh giữa useMemo vs useCallback</h2><p>useMemo và useCallback đề dùng để <code>"returns a memoized value"</code>, nhưng value return của useMemo và một giá trị cụ thể tuỳ vào function và biến đầu vào còn với useCallback là một function nếu như tham số deps không thay đổi.</p>
+<p>À, có một tips nhỏ khá thú vị là useMemo sẽ return giá trị, và giá trị này có thể là function nếu như bạn muốn:</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">useCallback</span>(fn, deps) = <span class="title function_">useMemo</span>(<span class="function">() =&gt;</span> fn, deps)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="Ket-luan"><a href="#Ket-luan" class="headerlink" title="Kết luận"></a>Kết luận</h2><p>Vậy là chúng ta đã qua 2 hook thường đường sử dụng khi chúng ta làm việc với react function component rồi đúng không, hy vọng chuỗi series này sẽ được update đến phần sau nếu như mình nhận được bất cứ yêu cầu nào.</p>
+<p>Dạo này mình đang thất nghiệp nên đang thực hiện vài dự án cá nhân, làm một vài dự án ngoài và còn khá nhiều thời gian rảnh nên mình sẽ tập trung viết.</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>f97</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://f97.xyz/usememo-va-usecallback.html">https://f97.xyz/usememo-va-usecallback.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="f97/f97.github.io"
+        data-repo-id="R_kgDOIXlxcQ"
+        data-category="Q&A"
+        data-category-id="DIC_kwDOIXlxcc4CSy5E"
+        data-mapping="url"
+        data-strict="1"
+        data-reactions-enabled="0"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="vi"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<div class="giscus" style="margin-top: 14px;"></div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/tech/"># tech</a>
+                        
+                            <a href="/tags/hooks-ky-su/"># hooks ký sự</a>
+                        
+                    
+                    <a href="/tags"># all-tags</a>
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© f97 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/f97/chic" target="_blank">@f97/chic</a></span>
+    </div>
+</footer>
+
+    </div>
+<!-- hexo injector body_end start --><script>
+// Check that service workers are supported
+if ('serviceWorker' in navigator) {
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+<!-- hexo injector body_end end --></body>
+
+</html>

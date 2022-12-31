@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+
+    <meta name="author" content="f97">
+
+
+    <meta name="subtitle" content="f97 (f97)">
+
+
+    <meta name="description" content="Mình là Khoản! <br/> Kỹ sư mặt tiền ở một thành phố nhỏ xíu ở miền trung Việt Nam [(xem thêm)](/about)">
+
+
+    <meta name="keywords" content="f97, dev">
+
+
+    <title>[Tech] Chơi Đùa Với Dokku | f97.xyz</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js" ></script>
+    
+    <script src="/js/tocbot.min.js" ></script>
+    
+
+
+
+    <link href="https://wancharle.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+
+
+
+    
+    
+        
+    
+
+
+
+
+<!-- hexo injector head_end start --><link rel="manifest" href="/manifest.json" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">f97.xyz</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">f97.xyz</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <script>
+                // this function is used to check current theme before page loaded.
+                (() => {
+                    let currentTheme = window.localStorage && window.localStorage.getItem('theme');
+                    if (!currentTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        currentTheme = 'dark';
+                    }
+                    const isDark = currentTheme === 'dark';
+                    const pagebody = document.getElementsByTagName('body')[0]
+                    if (isDark) {
+                        pagebody.classList.add('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+                    } else {
+                        pagebody.classList.remove('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Light"
+                    }
+                })();
+            </script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">[Tech] Chơi Đùa Với Dokku</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">f97</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">19-09-2020</a>
+                        </span>
+                    
+                    
+
+                    
+                </div>
+            
+        </header>
+
+            
+                <div class="post-content ">
+            
+            <p>Hellloooo…</p>
+<p>Các bạn biết heroku không, và cái giá của heroku thì không rẻ tẹo nào đúng hông! Và dù sao chúng ta cũng là dev, thôi thì mua một cái server mà build luôn heroku lên đó dùng unlimited cho sướng đúng không nào.</p>
+<p>Thôi bỏ qua màn giới thiệu, vào chơi với nó nào.</p>
+<h2 id="I-Heroku-voi-Dokku-la-gi"><a href="#I-Heroku-voi-Dokku-la-gi" class="headerlink" title="I. Heroku với Dokku là gì?"></a>I. Heroku với Dokku là gì?</h2><p>Ý tưởng tạo một cái heroku trên máy chủ của mình vào một ngày mình nhận ra, mình thường tạo rất nhiều app node, react, python… Vậy tại sao mình không tạo một cái server để xài mà phải dùng dịch vụ của thằng heroku? Dù sao mình cũng là dev culi và có nhiều thời gian rảnh mà ( 11:00 PM đến 2:00 AM <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>  )</p>
+<p>Và qua quá trình tìm hiểu thì mình biết được Heroku là một cái PaaS (Platform as a service), vậy là ngay lập tức mình tìm các công cụ PaaS self hosted đang chia sẻ open source trên mạng, và may mắn là mình tìm được vài cái tên và trong đó Dokku là cái tên nổi bật nhất.</p>
+<p>Vậy PaaS là gì? Bạn tự tìm hiểu đi nhé.</p>
+<h2 id="II-Quick-start-with-Dokku"><a href="#II-Quick-start-with-Dokku" class="headerlink" title="II. Quick-start with Dokku"></a>II. Quick-start with Dokku</h2><p>Muốn dùng nó thì cài được nó trên server, thôi bắt đầu nào.. <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>  Mình vừa tạo một cái vps mới rồi <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>  </p>
+<h3 id="1-CAI-DOKKU-NAO"><a href="#1-CAI-DOKKU-NAO" class="headerlink" title="1. CÀI DOKKU NÀO"></a>1. CÀI DOKKU NÀO</h3><p>Cứ mặc định coi như quá trình SSH, setup server… bạn đã biết rồi và mình chỉ bắt đầu với dokku nhé. À mà bạn nên dùng Ubuntu vì nó hỗ trợ tốt nhất, riêng mình đang tạo vps <em>ubuntu 18.04 minimal.</em></p>
+<h4 id="Cai-no-len-VPS"><a href="#Cai-no-len-VPS" class="headerlink" title="Cài nó lên VPS"></a>Cài nó lên VPS</h4><p>Đây là mấy dòng lệnh cài nó: </p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/dokku/dokku/v0.22.3/bootstrap.sh</span><br><span class="line">sudo DOKKU_TAG=v0.22.3 bash bootstrap.sh</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Và đây là cách mình chạy nó ( copy + paste )</p>
+<p><img src="https://lh6.googleusercontent.com/xNktzLsoGRnLdmVfkYWdXBZi0jMvX-AZF0m517MZnmkxmrMoHouMze7PGi7edNom5MdbtfCHn8TD96aXHCgxU1JnXIPfmw51EBsl1VS4oSSfByWrvxVjudlKwQdWaGo_1EaaKDoY"></p>
+<p>Pha ly cà phê rồi nhâm nhi nhé <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>  Quá trình này mất tầm 30s đến vài phút tùy vào giá tiền bạn có thể bỏ ra. ( Cái server của mình là 30 phút <span class="github-emoji"><span>😭</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f62d.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>  )</p>
+<p>Khi nào nó lòi ra cái màn hình như thế này là xong rồi nhé</p>
+<p><img src="https://lh4.googleusercontent.com/QZh3ZDI8Ge_d0lnerE5sQ4GKhAa0MvaMowsg1Uoav1Hrrdkin_3DpcpHM7DsPz-TPCgnCAIvUMV0ubR2rAuI7RjysUr6zaoVvtBAzDtu634-usym-8Yl6NMQXt_T0ks98nwIrSjM"></p>
+<p>Sau khi cài xong mà bạn để đó là toi rồi nhé, cần phải cấu hình thêm vài cái nữa nè</p>
+<h3 id="DOI-PASSWORD-CHO-DOKKU-ACCOUNT"><a href="#DOI-PASSWORD-CHO-DOKKU-ACCOUNT" class="headerlink" title="ĐỔI PASSWORD CHO DOKKU ACCOUNT"></a>ĐỔI PASSWORD CHO DOKKU ACCOUNT</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@devcui:~<span class="comment"># passwd dokku</span></span><br><span class="line">Enter new UNIX password: </span><br><span class="line">Retype new UNIX password: </span><br><span class="line">passwd: password updated successfully</span><br><span class="line">root@devcui:~<span class="comment"># </span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://lh3.googleusercontent.com/56OeY5qJ20k_BwEeb5Xj1XWPntulPxTqw5_EEySt8UiNVsPE63SMu1PCpfySKtmNQBxB749It1U6061NaGlU2JH_1qOGecy2dLRx9Mwc6XFbPQFs6AxaG_gbJ2OimSfFeCtuMexn"></p>
+<p>Đổi mật khẩu cho acc dokku của vps nhé bạn tôi</p>
+<h4 id="Tao-Public-SSH-Keys-nhap-key-va-setup-hostname"><a href="#Tao-Public-SSH-Keys-nhap-key-va-setup-hostname" class="headerlink" title="Tạo Public SSH Keys, nhập key và setup hostname"></a>Tạo Public SSH Keys, nhập key và setup hostname</h4><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -o</span><br><span class="line"><span class="built_in">cat</span> ~/.ssh/id_rsa.pub</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://lh5.googleusercontent.com/kHAkSRCcYVDxV5aGZE4pfzFliZjgl5Ac37Sfy4-zfsW4NOeDnXLtKNyvTKlz_YcHGLbPV9XaPi03UZBFUg8eypBS-mbHuIKgt9VDiW__d3mutecxSqrjSKn1AitJMDtaUMwjONZL"></p>
+<p>Sau đó truy cập vào ip của vps trên trình duyệt rồi paste nó vào, như hình này nè, nhớ nhập IP vào chỗ hostname nhé</p>
+<p><img src="https://lh4.googleusercontent.com/rhYqIbeMlrG1ULoxKMgmnw79EngtzW_bglVmwcb4rLcBLNVVkZPM2O06NqAtyMB__TQQq_EjXEodjHxNTfNupxiiyh2cDfZBC8b0r_9uiouzYm_XOVQredgHm8sywFiZ4HeXbwB8"></p>
+<p>Xong, quá trình cài đặt coi như xong nhé</p>
+<h3 id="2-TAO-CAI-APP-VAO-BUILD-NO-THOI-NAO"><a href="#2-TAO-CAI-APP-VAO-BUILD-NO-THOI-NAO" class="headerlink" title="2. TẠO CÁI APP VÀO BUILD NÓ THÔI NÀO"></a>2. TẠO CÁI APP VÀO BUILD NÓ THÔI NÀO</h3><p>Mình đã tạo bộ mã nguồn siêu xịn sò để test, bạn có thể check ở đây nhé :</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/devcui/dokku-node-example</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Oke, giờ tạo app ta dùng lệnh</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dokku apps:create dokku-node-example</span><br><span class="line">dokku git:initialize dokku-node-example</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Rồi bạn trỏ domain của bạn về IP của host, tuỳ vào việc bạn dùng nhà cung cấp tên miền nào thì nó sẽ có giao diện khác nhau nên mình đi bước tiếp.</p>
+<p>Thêm tên miền của bạn vào app.</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dokku domains:add dokku-node-example dokku-node-example.devcui.com</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="3-DAY-CODE-LEN-APP-CUA-DOKKU-NAO"><a href="#3-DAY-CODE-LEN-APP-CUA-DOKKU-NAO" class="headerlink" title="3. ĐẨY CODE LÊN APP CỦA DOKKU NÀO"></a>3. ĐẨY CODE LÊN APP CỦA DOKKU NÀO</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/devcui/dokku-node-example.git</span><br><span class="line"><span class="built_in">cd</span> dokku-node-example</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Trước tiên thì cứ clone về rồi cd vào git cái đã nè, hoặc nó đã nằm trên máy của bạn thì thôi khỏi cần cũng được.</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote add dokku dokku@35.237.140.234:dokku-node-example</span><br><span class="line">git push dokku master</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Rồi thêm dokku vào git, giống với heroku thôi.</p>
+<p><img src="https://lh6.googleusercontent.com/CVerq43g3Yw6YDpFSrkw--pj2D1N2N2ebfrb9szsOpKbdLst7GEly97oRs1MExKL3-qryHnCWVQAGCLYld3ALJuMZuI8Nec5MazLww5fzhxKrWLigPY_bLHyNzIWhtepNNhiO_bB"></p>
+<p>Xong chuyện còn lại hãy để dokku lo <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> </p>
+<p><img src="https://lh6.googleusercontent.com/uwRf13XXcDl7zOfefid6x6UebkMHVUAugd_i60YjNMtHOJ7xc6lKZxFC6thgnG8GU9XTTM4aD2uRcWK5u1HHf83sG2AFUUHU_97DqP3Fe_RvS9WOIIXrkxIF53jhGIYsfajvxTx8"></p>
+<p>Cuối cùng thì chuyện gì đến sẽ đến thôi phải không nào.</p>
+<h2 id="III-Vai-trick-nho-voi-Dokku"><a href="#III-Vai-trick-nho-voi-Dokku" class="headerlink" title="III. Vài trick nhỏ với Dokku"></a>III. Vài trick nhỏ với Dokku</h2><p style="text-align: right">to be continued</p>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>f97</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://f97.xyz/choi-dua-voi-dokku.html">https://f97.xyz/choi-dua-voi-dokku.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="f97/f97.github.io"
+        data-repo-id="R_kgDOIXlxcQ"
+        data-category="Q&A"
+        data-category-id="DIC_kwDOIXlxcc4CSy5E"
+        data-mapping="url"
+        data-strict="1"
+        data-reactions-enabled="0"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="vi"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<div class="giscus" style="margin-top: 14px;"></div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/tech/"># tech</a>
+                        
+                            <a href="/tags/code/"># code</a>
+                        
+                            <a href="/tags/devops/"># devops</a>
+                        
+                    
+                    <a href="/tags"># all-tags</a>
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© f97 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/f97/chic" target="_blank">@f97/chic</a></span>
+    </div>
+</footer>
+
+    </div>
+<!-- hexo injector body_end start --><script>
+// Check that service workers are supported
+if ('serviceWorker' in navigator) {
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+<!-- hexo injector body_end end --></body>
+
+</html>

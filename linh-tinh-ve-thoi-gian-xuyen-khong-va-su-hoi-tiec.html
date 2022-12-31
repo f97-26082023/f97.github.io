@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+
+    <meta name="author" content="f97">
+
+
+    <meta name="subtitle" content="f97 (f97)">
+
+
+    <meta name="description" content="Mình là Khoản! <br/> Kỹ sư mặt tiền ở một thành phố nhỏ xíu ở miền trung Việt Nam [(xem thêm)](/about)">
+
+
+    <meta name="keywords" content="f97, dev">
+
+
+    <title>[Life] Thời gian và hối tiếc | f97.xyz</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js" ></script>
+    
+    <script src="/js/tocbot.min.js" ></script>
+    
+
+
+
+    <link href="https://wancharle.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+
+
+
+    
+    
+        
+    
+
+
+
+
+<!-- hexo injector head_end start --><link rel="manifest" href="/manifest.json" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">f97.xyz</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">f97.xyz</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <script>
+                // this function is used to check current theme before page loaded.
+                (() => {
+                    let currentTheme = window.localStorage && window.localStorage.getItem('theme');
+                    if (!currentTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        currentTheme = 'dark';
+                    }
+                    const isDark = currentTheme === 'dark';
+                    const pagebody = document.getElementsByTagName('body')[0]
+                    if (isDark) {
+                        pagebody.classList.add('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+                    } else {
+                        pagebody.classList.remove('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Light"
+                    }
+                })();
+            </script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">[Life] Thời gian và hối tiếc</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">f97</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">11-04-2022</a>
+                        </span>
+                    
+                    
+                        <span class="post-time">
+                        Update: <a href="#">24-04-2022</a>
+                        </span>
+                    
+
+                    
+                </div>
+            
+        </header>
+
+            
+                <div class="post-content ">
+            
+            <p>Thôi thì hôm nay nhân ngày vừa bị bạn gái mới quen cho leo cây vì ngủ quên nên tới muộn 15’ thì viết đôi ba dòng coi như đánh dấu cho những năm tháng đáng nhớ nhất tuổi trẻ của mình.</p>
+<p>Cách đây vài hôm, tại một pub nhỏ gần cầu rồng, mình ngồi chém gió với ông bạn bên đó thì ổng hỏi một câu: “Nếu mày quay lại năm mày 15 tuổi thì mày sẽ nói gì với mày của năm tháng đó?” . Lúc đó nhân lúc hương vị của ly cocktail vẫn chưa tan trong miệng, tôi buột miệng nói một câu: “Khi cô ấy im lặng, cậu hãy lên tiếng và khi cô ấy buông tay, cậu hãy cố níu lấy.”</p>
+<h2 id="Thoi-gian"><a href="#Thoi-gian" class="headerlink" title="Thời gian?"></a>Thời gian?</h2><p>Nếu ai đó hỏi tôi thì tôi chỉ trả lời theo định nghĩa của một triết gia Hy Lạp nào đó sống trước tôi vài chục thế kỷ là: “Thời gian cũng chỉ là khoảng cách giữa một sự thay đổi này đến một sự thay đổi khác.”</p>
+<p>Sau này thì người ta đã quy định cụ thể ra 1s bằng bao nhiêu chu kì bán rã của nguyên tử gì gì đó, nhưng suy cho cùng sau tất cả thời gian chỉ là một ngộ nhận, một nhận định của con người về thứ gì đó mà con người ta hy vọng rằng có một ngày nào đó có thể dùng những nhận định này mà có thể thay đổi nó.</p>
+<p>Thời gian là một vector một chiều, đó thật sự là chuyện mà ai cũng biết và chắc chắn không thể thay đổi nó, ít nhất là đến khi con người phát hiện ra mình đang sống trong giả lập và sử dụng phần mềm hack để có thể thay đổi vài bit bộ nhớ. Còn nếu một phần vạn khả năng vũ trụ của mình là khởi nguyên của tất cả vũ trụ thì chúng ta không thể quay ngược thời gian.</p>
+<h2 id="Xuyen-khong"><a href="#Xuyen-khong" class="headerlink" title="Xuyên không"></a>Xuyên không</h2><p>Xuyên không-thời gian là một khái niệm thật sự đã được con người ta để ra từ những năm tháng bắt đầu của nền văn minh con người rồi nhưng suy cho cùng đó chỉ là ước mộng viển vông của con người. Dù rằng đời này ai cũng muốn có thể thay đổi quá khứ để một lần nào đó những nuối tiếc của mình không còn là nuối tiếc nữa.</p>
+<p>Du hành thời gian có 2 nhánh là du hành về quá khứ và du hành đến tương lai.</p>
+<h3 id="Du-hanh-qua-khu"><a href="#Du-hanh-qua-khu" class="headerlink" title="Du hành quá khứ:"></a>Du hành quá khứ:</h3><p>Du hành về quá khứ sinh ra rất rất nhiều nghịch lý mà nổi tiếng nhất nghịch lý ông nội, tạm hiểu nghịch lý ông nội là nếu bạn quay về quá khứ và giết ông nội bạn thì bạn không được sinh ra và nếu bạn không được sinh ra thì bạn không thể quay về thời gian và giết ông nội bạn, vvà bạn có thể quay về… và cứ thế vòng lặp này là vô tận. </p>
+<p>Có một lý thuyết có thể giải quyết những nghịch lý này là lý thuyết đa vũ trụ, thuyết đa vũ trụ thì không phải lý thuyết chính thống vì không có thực tế nào chứng minh nó mà nó được suy ra từ lý thuyết khác. Tạm hiểu thì thuyết đa vũ trụ nói rằng: Bất cứ một hành động nào của bạn sẽ sinh ra một vũ trụ thứ cấp, kiểu như hôm nay mình trễ hẹn cuộc hẹn với con bé nên sinh ra một vũ trụ là mình đang ngồi đây viết linh tinh, và có thể ở một vũ trụ nào đó mình không dậy muộn, không trễ hẹn và đang có một buổi cafe lãng mạn chẳng hạn<span class="github-emoji"><span>😏</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></p>
+<p>Nhưng…</p>
+<p>nhưng…</p>
+<p>nhưng… theo như thuyết đa vũ trụ, thì khi bạn quay về và thay đổi những thứ trong quá khứ đó thì lúc bạn quay lại vũ trụ bạn quay lại có phải vũ trụ đã được thay đổi hay không? Và trong trường hợp may mắn bạn quay lại vụ trụ duy nhất đã thay đổi đó thì liệu những con người ở trong thế giới đã thay đổi đó có phải những con người bạn đã gặp, đã quen và đã yêu thương hay không?</p>
+<h3 id="Du-hanh-tuong-lai"><a href="#Du-hanh-tuong-lai" class="headerlink" title="Du hành tương lai"></a>Du hành tương lai</h3><p>Một phạm trù đáng nói ở đây nữa là phạm trù du hành tương lai, du hành tương lai thật sự không sinh ra quá nhiều nghịch lý như du hành quá khứ vì hiện tại bạn, tôi, những người xung quay bạn và tôi đều đang du hành tương lai với tốc độ 60 giây mỗi phút, và bạn thử tưởng tượng nếu như trong một giây bạn có thể duy chuyển 10 năm thì đó gọi là du hành tương lai, cơ thế bạn chỉ thay đổi 1s nhưng thế giới đã thay đổi 10 năm và sau đó bạn quay về quá khứ để đặt một số vietlot (đùa thôi)</p>
+<p>Nhưng…</p>
+<p>nhưng…</p>
+<p>nhưng… có những lúc mình vẫn hay tự hỏi, nếu như thật sự có những thứ đó xảy ra, vậy phải chăng tương lai đã được định trước và thật sự bạn có làm gì đi nữa thì cũng chẳng thể thay đổi được kết quả của tương lai đó. Nếu thật sự như vậy thì đáng buồn thật<span class="github-emoji"><span>😏</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> </p>
+<h2 id="Ke-ve-vai-su-hoi-tiec-cua-tuoi-tre"><a href="#Ke-ve-vai-su-hoi-tiec-cua-tuoi-tre" class="headerlink" title="Kể về vài sự hối tiếc của tuổi trẻ"></a>Kể về vài sự hối tiếc của tuổi trẻ</h2><p>Đời người ai cũng trải qua vài ba chuyện, hoặc rất nhiều chuyện trong đời mà bản thân không thể không nói rằng: Giá như, giá như lúc đó… </p>
+<p>Như tôi năm 13 tuổi tôi ước tôi học tiếng anh sớm hơn, năm 15 tuổi tôi ước tôi gặp em sớm hơn, năm 17 tuổi tôi ước tôi ôm cô ấy chặt hơn, năm 20 tuổi tôi ước tôi chấp nhận học bổng du học đó, năm 22 tuổi tôi ước tôi không chọn ở Việt Nam làm… Ở đời có cả trăm vạn cái giá như như thế. </p>
+<p>Nhưng đến khi tôi của năm 25 nhìn lại thì tôi thấy rằng, thật sự nếu như được chọn lại thì tôi của năm đó vẫn chọn như vậy thôi, với lượng kiến thức năm đó, tài chính năm đó và cả trăm vạn thứ cần nói năm đó thì lựa chọn năm đó vẫn là tốt nhất.</p>
+<hr>
+<p>Vài trăm lần chọn đúng, vài vạn lần chọn sai. Cuộc đời chỉ là hàng đống lựa chọn xếp chồng lên nhau, đúng đúng sai sai chỉ là nhất thời, ai hỏi tôi nếu được chọn lại thì có thay đổi lựa chọn đó không, câu trả lời là <code>YESSSSSSSSSS</code>, nhưng nếu hỏi tôi có lần nào hối tiếc về những lựa chọn năm đó không, câu trả lời đầu tiên, luôn luôn và duy nhất là <code>NOOOOOOOO</code> vì tôi tôi của những năm đó đã lựa chọn hoàn toàn chính xác với tài nguyên tôi có của năm đó. </p>
+<p style="text-align: right;font-style: italic;">
+Chào bạn, hy vọng được gặp bạn của những năm tháng sau này.<br>
+Đà Nẵng, ngày 11 tháng 4 năm 2022.
+</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>f97</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://f97.xyz/linh-tinh-ve-thoi-gian-xuyen-khong-va-su-hoi-tiec.html">https://f97.xyz/linh-tinh-ve-thoi-gian-xuyen-khong-va-su-hoi-tiec.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="f97/f97.github.io"
+        data-repo-id="R_kgDOIXlxcQ"
+        data-category="Q&A"
+        data-category-id="DIC_kwDOIXlxcc4CSy5E"
+        data-mapping="url"
+        data-strict="1"
+        data-reactions-enabled="0"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="vi"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<div class="giscus" style="margin-top: 14px;"></div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/linh-tinh/"># linh tinh</a>
+                        
+                            <a href="/tags/life/"># life</a>
+                        
+                            <a href="/tags/tnks/"># tnks</a>
+                        
+                    
+                    <a href="/tags"># all-tags</a>
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© f97 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/f97/chic" target="_blank">@f97/chic</a></span>
+    </div>
+</footer>
+
+    </div>
+<!-- hexo injector body_end start --><script>
+// Check that service workers are supported
+if ('serviceWorker' in navigator) {
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+<!-- hexo injector body_end end --></body>
+
+</html>

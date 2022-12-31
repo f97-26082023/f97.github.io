@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+
+    <meta name="author" content="f97">
+
+
+    <meta name="subtitle" content="f97 (f97)">
+
+
+    <meta name="description" content="Mình là Khoản! <br/> Kỹ sư mặt tiền ở một thành phố nhỏ xíu ở miền trung Việt Nam [(xem thêm)](/about)">
+
+
+    <meta name="keywords" content="f97, dev">
+
+
+    <title>[Hooks] [Hooks ký sự] useEffect và useLayoutEffect  | f97.xyz</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js" ></script>
+    
+    <script src="/js/tocbot.min.js" ></script>
+    
+
+
+
+    <link href="https://wancharle.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+
+
+
+    
+    
+        
+    
+
+
+
+
+<!-- hexo injector head_end start --><link rel="manifest" href="/manifest.json" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">f97.xyz</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">f97.xyz</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <script>
+                // this function is used to check current theme before page loaded.
+                (() => {
+                    let currentTheme = window.localStorage && window.localStorage.getItem('theme');
+                    if (!currentTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        currentTheme = 'dark';
+                    }
+                    const isDark = currentTheme === 'dark';
+                    const pagebody = document.getElementsByTagName('body')[0]
+                    if (isDark) {
+                        pagebody.classList.add('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+                    } else {
+                        pagebody.classList.remove('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Light"
+                    }
+                })();
+            </script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">[Hooks] [Hooks ký sự] useEffect và useLayoutEffect </h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">f97</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">21-06-2022</a>
+                        </span>
+                    
+                    
+
+                    
+                </div>
+            
+        </header>
+
+            
+                <div class="post-content ">
+            
+            <p>Vì được yêu thích nên hôm nay lại là chủ đề về hooks thôi, hy vọng không ai thất vọng với điều này.</p>
+<h2 id="useEffect-effect-deps"><a href="#useEffect-effect-deps" class="headerlink" title="useEffect(effect, deps)"></a>useEffect(effect, deps)</h2><h3 id="Khai-niem"><a href="#Khai-niem" class="headerlink" title="Khái niệm"></a>Khái niệm</h3><p>Bằng một vài cách nào đó, bạn có thể tìm được khái niệm <code>useEffect</code> là:</p>
+<blockquote>
+<p>The <code>useEffect</code> Hook allows you to perform side effects in your components.</p>
+</blockquote>
+<h3 id="Chuc-nang"><a href="#Chuc-nang" class="headerlink" title="Chức năng"></a>Chức năng</h3><p>Khái niệm thật sự khó hiểu đúng không nào, để nói thì <code>useEffect</code> thật sự sẽ thay thế cho <code>componentDidMount</code>, <code>componentDidUpdate</code>, và <code>componentWillUnmount</code>.</p>
+<h3 id="Vi-du"><a href="#Vi-du" class="headerlink" title="Ví dụ"></a>Ví dụ</h3><p>Vấn với ví dụ thường ngày vì mình quá lười =)))</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> { useState, useEffect, useRef } <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>) {</span><br><span class="line">  <span class="keyword">const</span> [randomID1, setRandomID1] = <span class="title function_">useState</span>(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">const</span> [randomID2, setRandomID2] = <span class="title function_">useState</span>(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">const</span> ref = <span class="title function_">useRef</span>();</span><br><span class="line">  <span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> {</span><br><span class="line">    ref.<span class="property">current1</span> = randomID1</span><br><span class="line">  }, []);</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">"App"</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello CodeSandbox<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">{()</span> =&gt;</span> setRandomID1(Math.round(Math.random() * 10))}&gt;</span></span><br><span class="line"><span class="language-xml">        setRandomID1</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">{()</span> =&gt;</span> setRandomID2(Math.round(Math.random() * 10))}&gt;</span></span><br><span class="line"><span class="language-xml">        setRandomID2</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>randomID1: {randomID1}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>randomID2: {randomID2}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>ref: {ref.current}<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="componentDidMount"><a href="#componentDidMount" class="headerlink" title="componentDidMount"></a>componentDidMount</h4><p>Đây là cách dùng đơn giản nhất của <code>useEffect</code> với deps của chúng ta là <code>[]</code>, khi này thì <code>useEffect</code> của chúng ta chỉ chạy đúng một lần khi did mount:</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> {</span><br><span class="line">  ref.<span class="property">current</span> = randomID1</span><br><span class="line">}, []);</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://s8.gifyu.com/images/CPT2206211601-786x214.gif" alt="https://s8.gifyu.com/images/CPT2206211601-786x214.gif"></p>
+<p>Như bạn thấy, ở ví dụ thì dù bạn có bấm random để re-render bao nhiêu lần đi nữa thì ref.current mà nó chỉ lấy giá trị lúc mount của randomID1 là 1 mà thôi, cũng không thay đổi một lần nào nữa vì lúc này <code>useEffect</code> không chạy khi update mà chỉ chạy khi mount.</p>
+<h4 id="componentDidUpdate"><a href="#componentDidUpdate" class="headerlink" title="componentDidUpdate"></a>componentDidUpdate</h4><p>Khi chúng ta không truyền tham số vào, tức là lúc này <code>deps</code> ở đây của chúng ta có giá trị là <code>undefined</code> và <code>useEffect</code> sẽ hoạt động như là componentDidUpdate, sẽ chạy sau bất cứ khi nào component re-render (did update)</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> {</span><br><span class="line">  ref.<span class="property">current</span> = randomID1</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<p>Hoặc truyền vào state mà bạn muốn nó chạy mỗi khi thay đổi giống như hình dưới.</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> {</span><br><span class="line">  ref.<span class="property">current</span> = randomID1</span><br><span class="line">}, [randomID1]);</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://s8.gifyu.com/images/CPT2206211604-786x214.gif" alt="https://s8.gifyu.com/images/CPT2206211604-786x214.gif"></p>
+<p>Như bạn thấy, mỗi khi mình bấm setRandomID1 thì nó đều thay đổi vì current luôn liên tục được set giá trị của randomID1.</p>
+<h4 id="componentDidMount-effect-x3D-gt-cleanup-deps"><a href="#componentDidMount-effect-x3D-gt-cleanup-deps" class="headerlink" title="componentDidMount(effect => cleanup, deps)"></a>componentDidMount(effect =&gt; cleanup, deps)</h4><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">useEffect</span>(<span class="function">() =&gt;</span> {</span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> { <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">'componentUnMount'</span>)}</span><br><span class="line">}, []);</span><br></pre></td></tr></tbody></table></figure>
+<p>bạn chỉ cần return về một function và nó sẽ trở thành componentUnMount rồi, mình không thể cap hình vì mình quá lười nhưng bạn có thể xem nó ở đây nè: <a target="_blank" rel="noopener" href="https://stackoverflow.com/a/55020668">https://stackoverflow.com/a/55020668</a></p>
+<h2 id="useLayoutEffect-effect-deps"><a href="#useLayoutEffect-effect-deps" class="headerlink" title="useLayoutEffect(effect, deps)"></a>useLayoutEffect(effect, deps)</h2><p>Hehe, <code>useEffect</code> là một cái gì đó mà rất thông thường rồi nên mình rất lười khi viết nó, <code>useLayoutEffect</code>  lại là một vấn đề khác, cách sử dụng của nó khá tương tự với <code>useEffect</code> và mọi người thường hay tự hỏi khi đọc được nó là nó xuất hiện để làm gì =))</p>
+<h3 id="Khai-niem-1"><a href="#Khai-niem-1" class="headerlink" title="Khái niệm"></a>Khái niệm</h3><p>Bằng một vài bước google thì trang chủ nó có khái niệm là:</p>
+<blockquote>
+<p>The signature is identical to <code>useEffect</code>, but it fires synchronously after all DOM mutations. Use this to read layout from the DOM and synchronously re-render. Updates scheduled inside <code>useLayoutEffect</code>  will be flushed synchronously, before the browser has a chance to paint.<br>Prefer the standard <code>useEffect</code> when possible to avoid blocking visual updates.</p>
+</blockquote>
+<h3 id="Chuc-nang-1"><a href="#Chuc-nang-1" class="headerlink" title="Chức năng"></a>Chức năng</h3><p>Tương tự <code>useEffect</code> thì <code>useLayoutEffect</code>  lấy một function được gọi là effect làm đối số đầu tiên, và một mảng phụ thuộc làm đối số thứ hai. Đối số đầu tiên, effect, trả về một cleanup function hoặc giá trị undefined . <code>useLayoutEffect</code>  được minh hoạ như code dưới đây</p>
+<h3 id="Vi-du-1"><a href="#Vi-du-1" class="headerlink" title="Ví dụ"></a>Ví dụ</h3><p>Giống hệt như trên luôn, chỉ khá là các bạn <code>ctrl + H</code> và replace <code>useEffect</code> sang <code>useLayoutEffect</code> và mọi thứ hoạt động hoàn hảo không sai một tí nào, và… nó xuất hiện làm gì nhỉ?</p>
+<h2 id="So-sanh-giua-useEffect-voi-useLayoutEffect"><a href="#So-sanh-giua-useEffect-voi-useLayoutEffect" class="headerlink" title="So sánh giữa useEffect với useLayoutEffect"></a>So sánh giữa <code>useEffect</code> với <code>useLayoutEffect</code></h2><p>Tất nhiên team facebook không rảnh để tạo ra một function mới có chức năng giống hệt mà chỉ đổi tên thôi đúng không nào, <code>useEffect</code> và <code>useLayoutEffect</code> có 2 điểm khác nhau lớn nhất và chí mạng là:</p>
+<h4 id="1-Thoi-diem-thuc-thi-effect"><a href="#1-Thoi-diem-thuc-thi-effect" class="headerlink" title="1. Thời điểm thực thi effect:"></a>1. Thời điểm thực thi effect:</h4><p>Với <code>useEffect</code>, thì trình tự thực thi sẽ là:</p>
+<ol>
+<li>Bạn gây ra một sự kiện re-render.</li>
+<li>React re-render component của bạn.</li>
+<li>Màn hình được cập nhật giao diện.</li>
+<li>Cuối cùng <code>useEffect</code> chạy một cách bất đồng bộ.</li>
+</ol>
+<p>Còn với <code>useLayoutEffect</code> thì:</p>
+<ol>
+<li>Bạn gây ra một sự kiện re-render.</li>
+<li>React re-render component của bạn.</li>
+<li>Cuối cùng <code>useLayoutEffect</code> chạy đồng bộ, khi nào xong thì step tiếp mới được thực thi.</li>
+<li>Màn hình được cập nhật giao diện.</li>
+</ol>
+<h4 id="2-Bat-dong-bo-va-dong-bo"><a href="#2-Bat-dong-bo-va-dong-bo" class="headerlink" title="2. Bất đồng bộ và đồng bộ:"></a>2. Bất đồng bộ và đồng bộ:</h4><p>Bạn thấy ngay keyword rồi đấy, <code>useLayoutEffect</code> sẽ chỉ được thực thi đồng bộ và khi nào nó thực thi xong UI mới được cập nhật đúng không nào. Điều này khiến cho trong một số trường hợp nó giải quyết được vấn đề giá trị state thay đổi khiến cho dữ liệu màn hình nhấp nháy rất khó chịu. Và thường thì nó sinh ra chỉ để giải quyết vấn đề này. Bạn xem gif bên dưới để hiểu thêm nhé</p>
+<p>Với <code>useEffect</code>:</p>
+<p><img src="https://s8.gifyu.com/images/CPT2206211658-786x214.gif" alt="https://s8.gifyu.com/images/CPT2206211658-786x214.gif"></p>
+<p>Bạn có thấy mấy số random nó nháy nháy từ giá trị default sang giá trị mới rất khó chịu đúng không nào.</p>
+<p>Chỉ cần <code>ctrl + H</code> và replace <code>useEffect</code> sang <code>useLayoutEffect</code> thì:</p>
+<p><img src="https://s8.gifyu.com/images/CPT2206211700-786x214.gif" alt="https://s8.gifyu.com/images/CPT2206211700-786x214.gif"></p>
+<p>Cảm giác nhấp nháy khó chịu đó đã biến mất hoàn toàn, thay vào đó thì tốc độ hình ảnh xuất hiện có chậm hơn một tí nhưng mình nghĩ đây không phải vấn đề trong trường hợp này.</p>
+<h2 id="Ket-luan"><a href="#Ket-luan" class="headerlink" title="Kết luận"></a>Kết luận</h2><p>Aizz, nếu có ai đó hỏi mình là nên dùng <code>useEffect</code> hay <code>useLayoutEffect</code> thì phần lớn câu trả lời của mình là <code>useEffect</code>, bởi vì <code>useLayoutEffect</code> là đồng bộ và app của bạn sẽ không hiển thị gì cả đến khi effect hoàn thành và nó có thể và chắc chắn có thể là nguyên nhân xảy ra vấn đề về performance nếu bạn có những đoạn code xử lý chậm trong effect.</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>f97</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://f97.xyz/useeffect-va-uselayouteffect.html">https://f97.xyz/useeffect-va-uselayouteffect.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="f97/f97.github.io"
+        data-repo-id="R_kgDOIXlxcQ"
+        data-category="Q&A"
+        data-category-id="DIC_kwDOIXlxcc4CSy5E"
+        data-mapping="url"
+        data-strict="1"
+        data-reactions-enabled="0"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="vi"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<div class="giscus" style="margin-top: 14px;"></div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/tech/"># tech</a>
+                        
+                            <a href="/tags/hooks-ky-su/"># hooks ký sự</a>
+                        
+                    
+                    <a href="/tags"># all-tags</a>
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© f97 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/f97/chic" target="_blank">@f97/chic</a></span>
+    </div>
+</footer>
+
+    </div>
+<!-- hexo injector body_end start --><script>
+// Check that service workers are supported
+if ('serviceWorker' in navigator) {
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+<!-- hexo injector body_end end --></body>
+
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+
+    <meta name="author" content="f97">
+
+
+    <meta name="subtitle" content="f97 (f97)">
+
+
+    <meta name="description" content="Mình là Khoản! <br/> Kỹ sư mặt tiền ở một thành phố nhỏ xíu ở miền trung Việt Nam [(xem thêm)](/about)">
+
+
+    <meta name="keywords" content="f97, dev">
+
+
+    <title>[Life] Cách mình viết một NPM module - phần I: Lên ý tưởng và code | f97.xyz</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js" ></script>
+    
+    <script src="/js/tocbot.min.js" ></script>
+    
+
+
+
+    <link href="https://wancharle.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+
+
+
+    
+    
+        
+    
+
+
+
+
+<!-- hexo injector head_end start --><link rel="manifest" href="/manifest.json" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">f97.xyz</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">f97.xyz</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <script>
+                // this function is used to check current theme before page loaded.
+                (() => {
+                    let currentTheme = window.localStorage && window.localStorage.getItem('theme');
+                    if (!currentTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        currentTheme = 'dark';
+                    }
+                    const isDark = currentTheme === 'dark';
+                    const pagebody = document.getElementsByTagName('body')[0]
+                    if (isDark) {
+                        pagebody.classList.add('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+                    } else {
+                        pagebody.classList.remove('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Light"
+                    }
+                })();
+            </script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">[Life] Cách mình viết một NPM module - phần I: Lên ý tưởng và code</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">f97</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">13-06-2022</a>
+                        </span>
+                    
+                    
+
+                    
+                </div>
+            
+        </header>
+
+            
+                <div class="post-content ">
+            
+            <p>Mình thì thi thoảng mình cũng viết vài module trên npm để phục vụ cho công việc của riêng mình, và khi đẩy lên npmjs cũng là một cách gì đó để mình giúp đỡ cộng đồng lập trình viên khỏi phải làm lại công việc mà mình đã làm, và mình đã làm điều đó như thế nào? Đi cùng mình nhé…</p>
+<p>À, thật ra thì không định viết mấy bài về chủ đề này đâu nhưng bị hỏi nhiều quá và mình lười nên thôi viết luôn một bài cho nó khoẻ.</p>
+<h2 id="1-Len-y-tuong"><a href="#1-Len-y-tuong" class="headerlink" title="1. Lên ý tưởng"></a>1. Lên ý tưởng</h2><p>Bước đầu tiên luôn là lên ý tưởng để biết chúng ta cần làm gì và sẽ làm gì. Vì đây là bài hướng dẫn nên mình không đề cập ý tưởng gì cao siêu, giả sử bạn đang sử dụng <a target="_blank" rel="noopener" href="https://github.com/node-cache/node-cache">node-cache</a> và vì một lý do gì đó bạn muốn dùng file <code>.json</code> để tiện lưu trữ và kiểm tra thay đổi gì đó.</p>
+<p>Bạn thử tìm nhưng chợt nhận ra không có một module nào phù hợp với yêu cầu của bạn cả, hoặc có thì bạn không thích cách xử lý của nó nên bạn quyết định tạo ra một module mới để hỗ trợ công việc của bạn và biết đâu sẽ hỗ trợ cho người xung quanh.</p>
+<p>Ý tưởng của bạn sẽ làm theo node-cache với câu slogan của nó: <em>“A simple caching module that has <code>set</code>, <code>get</code> and <code>delete</code> methods and works a little bit like memcached.”</em></p>
+<h2 id="2-Bat-dau-code"><a href="#2-Bat-dau-code" class="headerlink" title="2. Bắt đầu code:"></a>2. Bắt đầu code:</h2><p>Xong phần lên ý tưởng thì chúng ta sẽ tiếp tục với phần code</p>
+<h3 id="2-1-Setup-du-an"><a href="#2-1-Setup-du-an" class="headerlink" title="2.1: Setup dự án"></a>2.1: Setup dự án</h3><p>Mình sẽ dùng những lệnh bình thường như <code>$ yarn init -y</code> để tạo ra phần core thôi, ở bài này mình mặc định nghĩ rằng các bạn đã từng làm việc với node.js nhiều lần rồi nên mình sẽ không để cập các bước cơ bản, code mình sau khi setup xong sẽ như bên dưới, hy vọng các bạn không khó chịu với struct của mình.</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">├── .gitea</span><br><span class="line">│&nbsp;&nbsp; └── drone.yml</span><br><span class="line">├── .gitignore</span><br><span class="line">├── .eslintignore</span><br><span class="line">├── .eslintrc.js</span><br><span class="line">├── jest.config.js</span><br><span class="line">├── package.json</span><br><span class="line">├── .prettierrc</span><br><span class="line">├── README.md</span><br><span class="line">├── renovate.json</span><br><span class="line">├── src</span><br><span class="line">│&nbsp;&nbsp; ├── index.ts</span><br><span class="line">│&nbsp;&nbsp; └── __tests__</span><br><span class="line">│&nbsp;&nbsp;     └── index.test.ts</span><br><span class="line">├── tsconfig.json</span><br><span class="line">└── yarn.lock</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Bạn có thể thêm thông tin của repo ở: <a target="_blank" rel="noopener" href="https://github.com/f97/json-cache">https://github.com/f97/json-cache</a></p>
+<h3 id="2-2-Code-tinh-nang"><a href="#2-2-Code-tinh-nang" class="headerlink" title="2.2: Code tính năng"></a>2.2: Code tính năng</h3><p>Như đã nói ở đầu bài là module của mình sẽ rất nhỏ và có 3 tính năng chính là: <code>get</code>, <code>set</code> và <code>delete</code></p>
+<p>Vì nhiều lý do nên mình đoán file <code>index.ts</code> của mình ban đầu sẽ như thế này: </p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">JsonCache</span> {</span><br><span class="line">    <span class="attr">path</span>: <span class="built_in">string</span></span><br><span class="line">    <span class="title function_">constructor</span> (<span class="attr">_path</span>: <span class="built_in">string</span>) {</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">path</span> = _path</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> set (<span class="attr">_key</span>: <span class="built_in">string</span>, <span class="attr">_value</span>: <span class="built_in">any</span>) {</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> get (<span class="attr">_key</span>: <span class="built_in">string</span>) {</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">delete</span> (<span class="attr">_key</span>: <span class="built_in">string</span>) {</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">JsonCache</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>và file <code>__test__/index.test.ts</code> sẽ là như thế này:</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">JsonCache</span> <span class="keyword">from</span> <span class="string">'../'</span></span><br><span class="line"><span class="keyword">import</span> os <span class="keyword">from</span> <span class="string">'os'</span></span><br><span class="line"></span><br><span class="line">jest.<span class="built_in">setTimeout</span>(<span class="number">30000</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> cache = <span class="keyword">new</span> <span class="title class_">JsonCache</span>(<span class="string">`<span class="subst">${os.tmpdir}</span>/json-file-cache.json`</span>)</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>(<span class="string">'cache.set'</span>, <span class="keyword">async</span> () =&gt; {</span><br><span class="line">})</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>(<span class="string">'cache.get'</span>, <span class="keyword">async</span> () =&gt; {</span><br><span class="line">})</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>(<span class="string">'cache.delete'</span>, <span class="keyword">async</span> () =&gt; {</span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Mình chỉ viết trước khung xương để tý nữa không bỡ ngỡ thôi, nên có thể mình sẽ thay đổi về sau.</p>
+<h4 id="2-2-a-Code-method-set-key-value"><a href="#2-2-a-Code-method-set-key-value" class="headerlink" title="2.2.a: Code method set(_key, _value)"></a>2.2.a: Code method set(_key, _value)</h4><p>Tại sao method <code>set</code> lại được viết trước ư, vì không có set lấy đâu <code>get</code> <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>  À, ban đầu mình định dùng <code>fs</code> để viết file nhưng cuối cùng thì mình lười quá nên quyết định đứng trên vai người khổng lồ, mình dùng module <a target="_blank" rel="noopener" href="https://github.com/npm/write-file-atomic">write-file-atomic</a> của chính npm viết để ghi file cho nhanh. Cuối cùng code ban đầu của mình là như thế này:</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> writeFileAtomic <span class="keyword">from</span> <span class="string">'write-file-atomic'</span></span><br><span class="line"></span><br><span class="line">[...]</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> set (<span class="attr">_key</span>: <span class="built_in">string</span>, <span class="attr">_value</span>: <span class="built_in">any</span>) {</span><br><span class="line">    <span class="keyword">const</span> _data = { [_key]: _value }</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">await</span> <span class="title function_">writeFileAtomic</span>(<span class="variable language_">this</span>.<span class="property">path</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(_data))</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Rồi mình nhận ra nếu như thế này thì chỉ ghi được có một <code>key</code> với <code>value</code> thôi à, thế là sau  30s sau code nó thành như vầy: </p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> writeFileAtomic <span class="keyword">from</span> <span class="string">'write-file-atomic'</span></span><br><span class="line"><span class="keyword">import</span> { promises <span class="keyword">as</span> fs } <span class="keyword">from</span> <span class="string">'fs'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">readFile</span> = <span class="keyword">async</span> (<span class="params">path:<span class="built_in">string</span></span>) =&gt; {</span><br><span class="line">    <span class="keyword">try</span> {</span><br><span class="line">        <span class="keyword">const</span> buffer = <span class="keyword">await</span> fs.<span class="title function_">readFile</span>(path)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">TextDecoder</span>().<span class="title function_">decode</span>(buffer)</span><br><span class="line">    } <span class="keyword">catch</span> (error) {</span><br><span class="line">        <span class="comment">// Mình không quan tâm gì cả, cứ err là ghi file mới :joy:  :luoibieng:</span></span><br><span class="line">        <span class="keyword">await</span> fs.<span class="title function_">writeFile</span>(path, <span class="string">'{}'</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'{}'</span></span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">[...]</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> set (<span class="attr">_key</span>: <span class="built_in">string</span>, <span class="attr">_value</span>: <span class="built_in">any</span>) {</span><br><span class="line">    <span class="keyword">if</span>(!_key || !_value ) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">'key or value not found'</span>)</span><br><span class="line">    <span class="keyword">const</span> _cache = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(<span class="keyword">await</span> <span class="title function_">readFile</span>(<span class="variable language_">this</span>.<span class="property">path</span>))</span><br><span class="line">    <span class="keyword">delete</span> _cache[_key]</span><br><span class="line">    <span class="keyword">const</span> _data = { ..._cache, [_key]: _value }</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">await</span> <span class="title function_">writeFileAtomic</span>(<span class="variable language_">this</span>.<span class="property">path</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(_data))</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Rồi sau đó mình sẽ hí hửng đi viết unit test, ở phạm vi bài viết này mình xin phép chỉ test 2 case cơ bản của method set là <code>happy case</code> và <code>value</code> là <code>undefined</code>, nếu bạn viết một module thực cho riêng mình bạn nếu viết test kĩ càng hơn nếu muốn an toàn<span class="github-emoji"><span>😏</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> </p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">beforeAll</span>(<span class="keyword">async</span> () =&gt; {</span><br><span class="line">  fs.<span class="title function_">writeFileSync</span>(path, <span class="string">'{}'</span>)</span><br><span class="line">})</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>(<span class="string">'cache.set numbers'</span>, <span class="keyword">async</span> () =&gt; {</span><br><span class="line">  <span class="keyword">await</span> cache.<span class="title function_">set</span>(<span class="string">'numbers'</span>, [<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>])</span><br><span class="line">  <span class="title function_">expect</span>(fs.<span class="title function_">readFileSync</span>(path, <span class="string">'utf8'</span>)).<span class="title function_">toBe</span>(<span class="string">'{"numbers":[1,3,4,6,7,8]}'</span>)</span><br><span class="line">})</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>(<span class="string">'cache.set error'</span>, <span class="keyword">async</span> () =&gt; {</span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">expect</span>(cache.<span class="title function_">set</span>(<span class="string">'something'</span>, <span class="literal">undefined</span>))</span><br><span class="line">    .<span class="property">rejects</span></span><br><span class="line">    .<span class="title function_">toThrow</span>(<span class="string">'key or value not found'</span>)</span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://i.imgur.com/8nifoxl.png" alt="https://i.imgur.com/8nifoxl.png"></p>
+<p>Yeah, quá tuyệt vời kết quả đạt được test passed cả 4, lý do có 2 cái là <code>cache.get</code> với <code>cache.set</code> mình setup ngay từ đầu. (Tất nhiên passed rồi mình mới post chứ <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> <span class="github-emoji"><span>😂</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></p>
+<h4 id="2-2-b-Tiep-theo-voi-method-get-key"><a href="#2-2-b-Tiep-theo-voi-method-get-key" class="headerlink" title="2.2.b: Tiếp theo với method get(_key)"></a>2.2.b: Tiếp theo với method get(_key)</h4><p>method này thì đơn giản, chúng ta chỉ cần đọc file rồi show kết quả với key được truyền vào là okay, ngoài ra phải parse giá trị từ file qua json vì file là string, code như sau:</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[...]</span><br><span class="line"><span class="keyword">async</span> get (<span class="attr">_key</span>: <span class="built_in">string</span>) {</span><br><span class="line">    <span class="keyword">const</span> _data = <span class="keyword">await</span> <span class="title function_">readFile</span>(<span class="variable language_">this</span>.<span class="property">path</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">JSON</span>.<span class="title function_">parse</span>(_data)[_key]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[...]</span><br><span class="line"><span class="title function_">test</span>(<span class="string">'cache.get'</span>, <span class="keyword">async</span> () =&gt; {</span><br><span class="line">  <span class="keyword">const</span> _numbers = <span class="keyword">await</span> cache.<span class="title function_">get</span>(<span class="string">'numbers'</span>)</span><br><span class="line">  <span class="title function_">expect</span>(_numbers).<span class="title function_">toMatchObject</span>([<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>])</span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Case này mình chỉ code với <code>happy case</code>, vì mình thấy quá nhiều dòng thì bài viết dài quá chứ không phải mình lười, thật đấy. Và tất nhiên là test này passed.</p>
+<h4 id="2-2-c-cuoi-cung-la-method-delete-key"><a href="#2-2-c-cuoi-cung-la-method-delete-key" class="headerlink" title="2.2.c: cuối cùng là method delete(_key)"></a>2.2.c: cuối cùng là method delete(_key)</h4><p>Aizz, lười quá… update luôn chung ở phần sau nhé<span class="github-emoji"><span>😏</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> </p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">delete</span> (<span class="attr">_key</span>: <span class="built_in">string</span>) {</span><br><span class="line">    <span class="keyword">const</span> _cache = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(<span class="keyword">await</span> <span class="title function_">readFile</span>(<span class="variable language_">this</span>.<span class="property">path</span>))</span><br><span class="line">    <span class="keyword">delete</span> _cache[_key]</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">await</span> <span class="title function_">writeFileAtomic</span>(<span class="variable language_">this</span>.<span class="property">path</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(_cache))</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[...]</span><br><span class="line"><span class="title function_">test</span>(<span class="string">'cache.delete'</span>, <span class="keyword">async</span> () =&gt; {</span><br><span class="line">   <span class="keyword">await</span> cache.<span class="title function_">delete</span>(<span class="string">'numbers'</span>)</span><br><span class="line">   <span class="title function_">expect</span>(fs.<span class="title function_">readFileSync</span>(path, <span class="string">'utf8'</span>)).<span class="title function_">toBe</span>(<span class="string">'{}'</span>)</span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Ket-Phan-I"><a href="#Ket-Phan-I" class="headerlink" title="Kết Phần I:"></a>Kết Phần I:</h2><p><img src="https://i.imgur.com/81ZGq27.png" alt="https://i.imgur.com/81ZGq27.png"></p>
+<p>Về cơ bản chúng ta có thể xong phần code nếu như sau khi chạy lên như trên là được, tất nhiên với một dự án nhỏ như vậy thì cấu trúc như thế này là đủ rồi nhưng nếu làm lớn hơn có thể sẽ khác nữa. Các bạn có thể xem thêm về code tại đây: <a target="_blank" rel="noopener" href="https://github.com/f97/json-cache/src/commit/6cc5cee8c39ae87dee139a7e3e3d7f16c94cff3f">f97/json-cache#6cc5cee8c3</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>f97</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://f97.xyz/cach-minh-viet-mot-npm-module-phan-1.html">https://f97.xyz/cach-minh-viet-mot-npm-module-phan-1.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="f97/f97.github.io"
+        data-repo-id="R_kgDOIXlxcQ"
+        data-category="Q&A"
+        data-category-id="DIC_kwDOIXlxcc4CSy5E"
+        data-mapping="url"
+        data-strict="1"
+        data-reactions-enabled="0"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="vi"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<div class="giscus" style="margin-top: 14px;"></div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/tech/"># tech</a>
+                        
+                            <a href="/tags/life/"># life</a>
+                        
+                    
+                    <a href="/tags"># all-tags</a>
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© f97 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/f97/chic" target="_blank">@f97/chic</a></span>
+    </div>
+</footer>
+
+    </div>
+<!-- hexo injector body_end start --><script>
+// Check that service workers are supported
+if ('serviceWorker' in navigator) {
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+<!-- hexo injector body_end end --></body>
+
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+
+    <meta name="author" content="f97">
+
+
+    <meta name="subtitle" content="f97 (f97)">
+
+
+    <meta name="description" content="Mình là Khoản! <br/> Kỹ sư mặt tiền ở một thành phố nhỏ xíu ở miền trung Việt Nam [(xem thêm)](/about)">
+
+
+    <meta name="keywords" content="f97, dev">
+
+
+    <title>[Tự sự] Thất nghiệp tuổi 25, một khoảng lặng giữa đời! | f97.xyz</title><meta name="robots" content="noindex">
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js" ></script>
+    
+    <script src="/js/tocbot.min.js" ></script>
+    
+
+
+
+    <link href="https://wancharle.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+
+
+
+    
+    
+        
+    
+
+
+
+
+<!-- hexo injector head_end start --><link rel="manifest" href="/manifest.json" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">f97.xyz</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">f97.xyz</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <script>
+                // this function is used to check current theme before page loaded.
+                (() => {
+                    let currentTheme = window.localStorage && window.localStorage.getItem('theme');
+                    if (!currentTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        currentTheme = 'dark';
+                    }
+                    const isDark = currentTheme === 'dark';
+                    const pagebody = document.getElementsByTagName('body')[0]
+                    if (isDark) {
+                        pagebody.classList.add('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+                    } else {
+                        pagebody.classList.remove('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Light"
+                    }
+                })();
+            </script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">[Tự sự] Thất nghiệp tuổi 25, một khoảng lặng giữa đời!</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">f97</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">04-05-2022</a>
+                        </span>
+                    
+                    
+                        <span class="post-time">
+                        Update: <a href="#">07-05-2022</a>
+                        </span>
+                    
+
+                    
+                </div>
+            
+        </header>
+
+            
+                <div class="post-content ">
+            
+            <p>Hì, lúc mình viết bài này là ngày 4 tháng 5, lúc mọi người đang tất bật quay lại với guồng quay cuộc sống sau mấy ngày nghỉ lễ dài thì mình vẫn đang ngồi yên lặng ở một quán cafe, nhìn đời thảnh thơi trôi và viết đôi dòng về dăm ba trải nghiệm bé tí của bản thân.</p>
+<!-- ![https://i.imgur.com/iyzt9PO.jpg](https://i.imgur.com/iyzt9PO.jpg) -->
+<h3 id="Truoc-gio-minh-ra-sao"><a href="#Truoc-gio-minh-ra-sao" class="headerlink" title="Trước giờ mình ra sao?"></a>Trước giờ mình ra sao?</h3><p>Mình vốn cũng không phải hạng xuất sắc gì cả, như mình hay nói thì mình là dạng “người trung bình”. Từ nhỏ đến lớn mình không có gì kiệt xuất để người khác nhìn vào là thấy ngay, từ tài năng, năng khiếu… cho đến thứ nhỏ nhoi như tài lẻ, kĩ năng.</p>
+<p>Nhưng dù bất cứ ở tập thể nào, giao bất cứ nhiệm vụ gì mình cũng luôn hoàn thành nhiệm vụ đứng hạng hai, hạng ba dù độ khó có là bao nhiêu đi chăng nữa. Mình list một vài sự kiện trong lịch sử mình cho các bạn biết:</p>
+<ul>
+<li>Hoàn cảnh gia đình bình thường, không giàu cũng không nghèo. Mình hay đùa đùa là <em>“đủ ăn”</em>.</li>
+<li>Già đình không quá hạnh phúc, cũng không quá bi đát.</li>
+<li>Bạn bè không quá nhiều cũng không quá ít, vài người thân thiết trên 10-15 năm, cũng có vài người không quen lắm.</li>
+<li>Từ năm lớp 1 đến lớp 9 luôn đứng thứ hạng 2-4 lớp nhưng chưa một lần đứng nhất.</li>
+<li>Lớp 10 đến 12 đứng nhất nhì lớp nhưng không phải do mình giỏi mà do lớp mình chọn tham gia là một lớp thường thay vì lớp chuyên.</li>
+<li>Thi học sinh giỏi vài lần nhưng chỉ đạt được mấy giải nhỏ, không đáng đề cập.</li>
+<li>Chơi bời thì mình có học võ, nhạc và hàng đống những thứ khác đều đạt mức trung bình, chơi được nhưng không quá giỏi.</li>
+<li>Thuốc lá, ke, cỏ…  mình đều thử qua nhưng kiểu như lữ khách qua đường, biết biết nhưng cũng không phải chuyên gia.</li>
+<li>Mình từng làm bí thư, tham gia hoạt động đoàn tới cấp trường, cấp thành phố nhưng cũng không có gì quá nổi bật. skill hoạt náo, skill hoạt động đoàn, MC…  đạt ở mức độ sử dụng được nhưng không xuất sắc.</li>
+<li>CLB mình tham gia hồi sinh viên, mình từng làm chủ nhiệm CLB nhưng quá trình hoạt động không có gì xuất sắc mấy.</li>
+<li>Đi làm thì năm nào mình cũng nhận đựơc MVP của cty nhưng cũng chỉ vậy.</li>
+<li>…</li>
+</ul>
+<p><em>Note: Mình đưa ra nhiều như vậy không phải kể khổ và mình cũng cũng chọn cách trải nghiệm nhiều như vậy chủ yếu để xem có bất cứ lĩnh vực nào mình có năng khiếu đặt biệt hay không, hay bất cứ gì đó để nói rằng mình xuât sắc người khác hay không nhưng thật sự không.</em></p>
+<p>Đọc sơ qua bạn sẽ thấy, mình thuộc kiểu người trung bình nhưng luôn cố gắng để thoát ra khỏi mức đó và cuối cùng vẫn là trung bình dù có qua bao nhiêu năm.</p>
+<p>Có nhiều sự thật thương tâm là vậy, trên đời luôn có những người sinh ra để sống một cuộc đời tầm thường dù cố gắng bao nhiêu đi nữa.</p>
+<h3 id="Lung-chung-tuoi-25"><a href="#Lung-chung-tuoi-25" class="headerlink" title="Lưng chừng tuổi 25."></a>Lưng chừng tuổi 25.</h3><p>Đến cách đây một đoạn thời gian, tự dưng một hôm mình đang lên ngồi trên công ty, làm việc như thường ngày thì mình chợt tự hỏi: <strong>“- TÔI ĐANG SỐNG CUỘC ĐỜI CỦA AI VẬY?”</strong></p>
+<p>Công ty lúc đó mình làm là một startup nhỏ với trụ sở chính ở US, một công việc mức lương khá cao so với mặt bằng, công việc vui vẻ, sếp nice, một sự an toàn không thể an toàn hơn. Nhưng sau một vài ngày suy nghĩ, mình vẫn báo trước với phòng nhân sự rằng 3 tháng sau mình sẽ rời công ty để cho mọi người đều có sự chuẩn bị trước ngày mình rời đi. <em>(Nhưng đến lúc mình đi vẫn được nhờ ở lại hỗ trợ công ty thêm 1 tháng vì vị trí của mình rất khó tuyển, mình được thông báo vậy)</em></p>
+<p>Và mình nghỉ vào ngày 1 tháng 4, vậy là vừa cách đây một tháng. Trong thời gian dài đó mình có thử dừng lại một tuần không làm gì hết chỉ để ngẫm nghĩ sự đời, có thử xách balo đi lòng vòng Tây Nguyên đến nổi da mình trắng mà giờ cháy nắng luôn rồi, có vài ngày chỉ ngồi cafe và cố nặn ra mấy chữ viết vào cuốn hồi kí<span class="github-emoji"><span>😏</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> Rồi mình cũng gặp lại vài người bạn cũ lâu ngày không gặp.</p>
+<p>Chợt nhận ra cuộc đời còn lắm thứ mình chưa trải nghiệm, nhiều người chưa gặp, nhiều người con bế tắc hơn cuộc đời của người trung bình giống như mình. Vì ít nhất mình còn trung bình còn họ thì dứơi cả trung bình.</p>
+<p>Cũng có vài lúc, thỉnh thoảng thôi mình thấy nhớ cái cảm giác bình yên hàng ngày chỉ đi làm, đến giờ về thì về…  công việc cứ lặp đi lặp lại như vậy, để mình biết quý trọng hơn những cái thường ngày như vậy.</p>
+<h3 id="Khoang-lang-giua-doi"><a href="#Khoang-lang-giua-doi" class="headerlink" title="Khoảng lặng giữa đời"></a>Khoảng lặng giữa đời</h3><p>Mình vừa phỏng vấn lại công ty mới, đây là một công ty con, làm product cho công ty lớn thuộc ngành vận tải top 10 thể giới.</p>
+<p>Pass hay fail thì mình chưa biết nhưng mình biết rồi mình vẫn sẽ tiếp tục quay lại với guồng quay cuộc sống vì đây là công việc mình yêu thích và vẫn sẽ yêu thích thôi.</p>
+<p>Nhưng sau một thời gian lặng đi giữa đời thì mình muốn nói rằng, sẽ có vài lần nữa mình dừng lại và nhìn lại những thứ mình đã làm được, chưa làm được và yêu quý thêm những phút giây bản thân còn sống, còn đựơc cống hiến.</p>
+<p>Mình không được như một vài bạn dành cả 1 năm để có thể gọi là GAP year và mình cũng không muốn như thế vì mình thấy rằng 12 tháng là quá dài trong đời người. Mình chỉ gọi đoạn thời gian dừng lại của mình là “Khoảng lặng giữa đời” thôi. Chỉ là một đoạn thời gian ngắn để dừng lại, đê nhìn lại những gì đã đạt được, những gì cần phải làm tiếp, những người mình đã gặp gỡ, những người mình đã bỏ lỡ… </p>
+<h3 id="Tong-ket"><a href="#Tong-ket" class="headerlink" title="Tổng kết"></a>Tổng kết</h3><p>Chỉ là một vài cảm xúc của mình ở độ tuổi lưng chừng 25, chưa lớn mà cũng chẳng còn nhỏ. Mình chưa từng và sẽ không bao giờ có ý định khuyên bất cứ ai làm gì với cuộc đời của họ cả vì mỗi người đều biết vị trí của mình đang ở đâu, cần làm gì và sẽ làm gì.</p>
+<p>Chúc các bạn dù làm gì và đang đứng ở đâu, hãy luôn sống một cuộc đời mình mơ ước.</p>
+<p style="text-align: right;font-style: italic;">
+Chào bạn, .<br>
+Đà Nẵng, ngày 04 tháng 05 năm 2022.
+</p>
+ 
+<!-- flag of hidden posts -->
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>f97</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://f97.xyz/that-nghiep-tuoi-25.html">https://f97.xyz/that-nghiep-tuoi-25.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="f97/f97.github.io"
+        data-repo-id="R_kgDOIXlxcQ"
+        data-category="Q&A"
+        data-category-id="DIC_kwDOIXlxcc4CSy5E"
+        data-mapping="url"
+        data-strict="1"
+        data-reactions-enabled="0"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="vi"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<div class="giscus" style="margin-top: 14px;"></div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/linh-tinh/"># linh tinh</a>
+                        
+                            <a href="/tags/life/"># life</a>
+                        
+                    
+                    <a href="/tags"># all-tags</a>
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© f97 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/f97/chic" target="_blank">@f97/chic</a></span>
+    </div>
+</footer>
+
+    </div>
+<!-- hexo injector body_end start --><script>
+// Check that service workers are supported
+if ('serviceWorker' in navigator) {
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+<!-- hexo injector body_end end --></body>
+
+</html>

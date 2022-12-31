@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+
+    <meta name="author" content="f97">
+
+
+    <meta name="subtitle" content="f97 (f97)">
+
+
+    <meta name="description" content="Mình là Khoản! <br/> Kỹ sư mặt tiền ở một thành phố nhỏ xíu ở miền trung Việt Nam [(xem thêm)](/about)">
+
+
+    <meta name="keywords" content="f97, dev">
+
+
+    <title>[Đầu năm 2022] Bão giông đầy trời!? | f97.xyz</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js" ></script>
+    
+    <script src="/js/tocbot.min.js" ></script>
+    
+
+
+
+    <link href="https://wancharle.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+
+
+
+    
+    
+        
+    
+
+
+
+
+<!-- hexo injector head_end start --><link rel="manifest" href="/manifest.json" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">f97.xyz</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">f97.xyz</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <script>
+                // this function is used to check current theme before page loaded.
+                (() => {
+                    let currentTheme = window.localStorage && window.localStorage.getItem('theme');
+                    if (!currentTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        currentTheme = 'dark';
+                    }
+                    const isDark = currentTheme === 'dark';
+                    const pagebody = document.getElementsByTagName('body')[0]
+                    if (isDark) {
+                        pagebody.classList.add('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+                    } else {
+                        pagebody.classList.remove('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Light"
+                    }
+                })();
+            </script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">[Đầu năm 2022] Bão giông đầy trời!?</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">f97</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">04-01-2022</a>
+                        </span>
+                    
+                    
+                        <span class="post-time">
+                        Update: <a href="#">27-06-2022</a>
+                        </span>
+                    
+
+                    
+                </div>
+            
+        </header>
+
+            
+                <div class="post-content check-list">
+            
+            <p>Viết cho những năm tháng nhìn đâu cũng thấy bão giông…</p>
+<hr>
+<p>2021 thật sự là một năm thất bại với mình, bao nhiêu kế hoạch đặt ra chẳng hoàn thành được mấy… Người ta trách COVID còn mình chỉ biết trách chính bản thân mình không cố gắng cũ, có lẽ cũng là do không chịu hiện những cam kết của mình. </p>
+<p>Mà thôi, dù sao thì 2021 cũng đã qua rồi, đi tiếp 2022 một cách mạnh mẽ nào <span class="github-emoji"><span>😆</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f606.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> <span class="github-emoji"><span>😆</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f606.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></p>
+<h3 id="Nam-2019-con-sot-lai"><a href="#Nam-2019-con-sot-lai" class="headerlink" title="Năm 2019 còn sót lại:"></a><a href="/muc-tieu-cho-nam-2019.html">Năm 2019</a> còn sót lại:</h3><ul>
+<li><input disabled="" type="checkbox"> 1. Đọc và review <strong>50 quyển sách</strong>. <span class="mute sidenote">Thể loại nào cũng được. <span class="github-emoji"><span>😋</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f60b.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> </span> ( Từ 2019 đến giờ chắc cũng đọc được 70 cuốn rồi, cơ mà vẫn chưa review được quyển nào)<ul>
+<li><input disabled="" type="checkbox"> 1.1 <del>Đọc</del> và review Hoàng Tử Bé.</li>
+<li><input checked="" disabled="" type="checkbox"> 1.2 <del>Đọc</del> và review lược sử loài người. [3]</li>
+<li><input disabled="" type="checkbox"> 1.3 <del>Đọc</del> và review Thịnh Vượng Tài Chính Tuổi 30 – Tập I.</li>
+<li><input checked="" disabled="" type="checkbox"> 1.4 Thịnh Vượng Tài Chính Tuổi 30 – Tập II – Review Sách [1]</li>
+<li><input checked="" disabled="" type="checkbox"> 1.5 Một lít nước mắt – Review Sách [2]</li>
+<li><input disabled="" type="checkbox"> 1.6 <del>Đọc</del> và review lược sử tương lai</li>
+<li><input disabled="" type="checkbox"> […]<!-- - [ ] 2\. Tìm được một người **đủ yêu thương** để có thể cùng mình đi cho đến hết thanh xuân. -->
+<!-- - [ ] 2.1 Chịu, không tìm được roadmap cho nó. --></li>
+</ul>
+</li>
+</ul>
+<h3 id="Nam-2020-cung-van-con"><a href="#Nam-2020-cung-van-con" class="headerlink" title="Năm 2020 cũng vẫn còn:"></a><a href="/muc-tieu-cho-nam-2019.html">Năm 2020</a> cũng vẫn còn:</h3><ul>
+<li><input checked="" disabled="" type="checkbox"> 3. <strong>Lòng vòng</strong> cái Miền Trung, dạo chơi khu vực Tây Nguyên và chụp dăm ba bức ảnh <span class="github-emoji"><span>📷</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f4f7.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> .  <span class="mute sidenote">( Phải đi qua được Kon Tum, Gia Lai, Đắk Lắk, Đắk Nông và Lâm Đồng)</span><!-- - [ ] 3.1 Tháng 8 này sẽ lên kontum. (with my friend, not my love ) --></li>
+<li><input disabled="" type="checkbox"> 4. Cùng người yêu quay lại Hà Nội và du ngoạn khu vực Tây Bắc.<!-- - [ ] 5\. Đưa bố mẹ ra Hà Nội _"chơi"_.:airplane: --></li>
+</ul>
+<h3 id="Nam-2021-con-nhieu-dieu-can-phai-phan-dau…"><a href="#Nam-2021-con-nhieu-dieu-can-phai-phan-dau…" class="headerlink" title="Năm 2021 còn nhiều điều cần phải phấn đấu…"></a><a href="/sap-het-nam-tong-ket-2020-phan-dau-2021.html">Năm 2021</a> còn nhiều điều cần phải phấn đấu…</h3><ul>
+<li><input disabled="" type="checkbox"> 6. Thu nhập tháng đạt mức 1300$ và cuối năm <del>2021</del>2022.<ul>
+<li><input checked="" disabled="" type="checkbox"> 6.1 Nâng cao giá trị bản thân và break level hiện tại.</li>
+<li><input disabled="" type="checkbox"> 6.2 Nghỉ việc tại công ty hiện tại và chuyển qua bên khác với mức lương cao hơn 1k của hiện tại.</li>
+</ul>
+</li>
+<li><input checked="" disabled="" type="checkbox"> 7. Nửa năm đạp xe đạp trên 10km và chỉ số PAI luôn trên 80.<ul>
+<li><input checked="" disabled="" type="checkbox"> <del>Mỗi ngày đạp xe vào buổi chiều lúc 18h-20h.</del></li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> 8. Đi đến một nơi nào đó ngoài đất nước Việt Nam này.<!-- - [ ] 8.1 Khi dịch được kiểm soát, tìm một tour du lịch Thái Lan vào tháng 10. --></li>
+<li><input disabled="" type="checkbox"> 9. Leo lên đỉnh phaxibang. <!-- - [ ] 9.1 Tháng 3 sẽ chưa vội tìm việc mới mà quay lại Hà Nội để leo phaxibang. -->
+<!-- - [ ] 10\. Đạt IELTS 5.5 --></li>
+<li><input disabled="" type="checkbox"> 11. Đạt được chứng chỉ <a target="_blank" rel="noopener" href="https://aws.amazon.com/certification/"><code>AWS Certification</code></a>. <span class="github-emoji"><span>🍀</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f340.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></li>
+</ul>
+<h3 id="Nam-2022-tuoi-25-song-sao-de-nam-35-nhin-lai-van-mim-cuoi-toi-nhe"><a href="#Nam-2022-tuoi-25-song-sao-de-nam-35-nhin-lai-van-mim-cuoi-toi-nhe" class="headerlink" title="Năm 2022 tuổi 25, sống sao để năm 35 nhìn lại vẫn mĩm cười tôi nhé:"></a><a href="/2022-bao-giong-day-troi-co-len-toi-oi.html">Năm 2022</a> tuổi 25, sống sao để năm 35 nhìn lại vẫn mĩm cười tôi nhé:</h3><ul>
+<li><input disabled="" type="checkbox"> 12. Trung bình mỗi tháng thụ động được 150$ tiền MMO từ mấy trang web của mình.<ul>
+<li><input disabled="" type="checkbox"> 12.1 Phát triển được 3 app mới và năng nổ chia sẻ nó trên reddit, github, voz… trong năm.</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> 13. Chuyển qua nhập hàng điện tử giá rẻ từ tàu (USB, Cáp…) về bán trên shoppe, cố gắng tận dụng khả năng MMO của mình để tăng thu nhập.<ul>
+<li><input disabled="" type="checkbox"> 13.1 Liên hệ lại cậu bạn cũ và nhập hàng tàu về khi có thể, vốn ban đầu tầm 30 củ thôi.</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> 14. Tạo thành thói quen 2 ngày tập thể dục 30 phút vào lúc 7h00 PM (Đạp xe, chạy bộ,…).</li>
+<li><input disabled="" type="checkbox"> 15. Chuyển từ viết nhật ký trên giấy sang viết online để tiết kiệm tài nguyên giấy cho trái đất, và chuyển từ vài lần một tuần sang hàng ngày.</li>
+<li><input checked="" disabled="" type="checkbox"> 16. Thay đổi style quần áo từ hàng giá rẻ vài tháng đổi một lần sang đồ thương hiệu có thể dùng lâu dài và chọn kiểu/màu có thể sử dụng lâu.<!-- - [x] 16.1 Mua áo thun ở các local brand như genz, under... chọn màu tối để có thể sử dụng lâu dài. -->
+<!-- - [x] 16.2 Chuyển qua mua quần ở genviet jeans,... chọn mua quần jean để tối ưu giá trị sử dụng. --></li>
+<li><input disabled="" type="checkbox"> 17. Mua raspberry pi 4 và học lập trình raspberry pi.<ul>
+<li><input checked="" disabled="" type="checkbox"> 17.1 Mua raspberry pi 4, và sử dụng nó như một server giá rẻ.</li>
+<li><input disabled="" type="checkbox"> 17.2 Học lập trình raspberry và biến nó thành một dự án thụ vị.</li>
+</ul>
+</li>
+</ul>
+<p>Năm 2021 còn rất nhiều điều nên 2022 sẽ cố gắng hoàn thành hết.</p>
+<h2 id="CHANGELOG"><a href="#CHANGELOG" class="headerlink" title="CHANGELOG"></a>CHANGELOG</h2><!-- ### [5.2.2022]
+ - [x] Remove some todo not important.
+ - [x] Update roadmap for some todo. -->
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>f97</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://f97.xyz/2022-bao-giong-day-troi-co-len-toi-oi.html">https://f97.xyz/2022-bao-giong-day-troi-co-len-toi-oi.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="f97/f97.github.io"
+        data-repo-id="R_kgDOIXlxcQ"
+        data-category="Q&A"
+        data-category-id="DIC_kwDOIXlxcc4CSy5E"
+        data-mapping="url"
+        data-strict="1"
+        data-reactions-enabled="0"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="vi"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<div class="giscus" style="margin-top: 14px;"></div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/todo/"># todo</a>
+                        
+                            <a href="/tags/list/"># list</a>
+                        
+                            <a href="/tags/yearlist/"># yearlist</a>
+                        
+                    
+                    <a href="/tags"># all-tags</a>
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© f97 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/f97/chic" target="_blank">@f97/chic</a></span>
+    </div>
+</footer>
+
+    </div>
+<!-- hexo injector body_end start --><script>
+// Check that service workers are supported
+if ('serviceWorker' in navigator) {
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+<!-- hexo injector body_end end --></body>
+
+</html>

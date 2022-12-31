@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+
+    <meta name="author" content="f97">
+
+
+    <meta name="subtitle" content="f97 (f97)">
+
+
+    <meta name="description" content="Mình là Khoản! <br/> Kỹ sư mặt tiền ở một thành phố nhỏ xíu ở miền trung Việt Nam [(xem thêm)](/about)">
+
+
+    <meta name="keywords" content="f97, dev">
+
+
+    <title>[Life] Chuyện yêu và game theory | f97.xyz</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js" ></script>
+    
+    <script src="/js/tocbot.min.js" ></script>
+    
+
+
+
+    <link href="https://wancharle.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+
+
+
+    
+    
+        
+    
+
+
+
+
+<!-- hexo injector head_end start --><link rel="manifest" href="/manifest.json" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">f97.xyz</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">f97.xyz</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">archives</a>
+                
+                    <a class="menu-item" href="/bucket-list">bucket-list</a>
+                
+                    <a class="menu-item" href="/about">about</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <script>
+                // this function is used to check current theme before page loaded.
+                (() => {
+                    let currentTheme = window.localStorage && window.localStorage.getItem('theme');
+                    if (!currentTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        currentTheme = 'dark';
+                    }
+                    const isDark = currentTheme === 'dark';
+                    const pagebody = document.getElementsByTagName('body')[0]
+                    if (isDark) {
+                        pagebody.classList.add('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+                    } else {
+                        pagebody.classList.remove('dark-theme');
+                        // mobile
+                        document.getElementById("mobile-toggle-theme").innerText = "· Light"
+                    }
+                })();
+            </script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">[Life] Chuyện yêu và game theory</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">f97</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">16-12-2021</a>
+                        </span>
+                    
+                    
+
+                    
+                </div>
+            
+        </header>
+
+            
+                <div class="post-content ">
+            
+            <blockquote>
+<p>CẢNH BÁO: WALL OF TEXT</p>
+</blockquote>
+<p>Yeah, cũng lâu thật lâu rồi mình mới viết mấy bài liên quan tới tâm lý hay mang quan điểm riêng và có xu hướng tranh luận, ngày xưa mình cũng hay viết về chủ đề này nhưng sau này thì già hơn tý tuổi nên cũng không muốn thể hiện bản thân và cũng ngại phải xông pha với xã hội nên không đăng trên mấy diễn đàn hay tham gia nữa mà chuyển qua đăng trên blog coi như là một chỗ để note lại ý kiến của bản thân và cũng không bị ai ném đá <span class="github-emoji"><span>😆</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f606.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> </p>
+<h2 id="Chuyen-yeu"><a href="#Chuyen-yeu" class="headerlink" title="Chuyện yêu:"></a>Chuyện yêu:</h2><p>Mình thì vốn cũng không phải một “play-boy” hay một “bad-boy” gì gì đó như mọi người hay nhận xét và mình yêu theo một cách giống người bình thường thôi, một vài mối quan hệ rõ ràng và một vài mối quan hệ không rõ ràng cho lắm. </p>
+<p>Mình đề cập tới vấn đề này dạo này mình hay ngồi nhậu, uống trà… để chém gió với các lão già hơn mình tầm hai giáp <span class="github-emoji"><span>😰</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f630.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span> , chuyện này cũng không có vấn đề gì cả nếu như mỗi lần đề cập tới vấn đề yêu đương mấy lão lại cứ bảo: <em><em>“Thằng Kh đã bao giờ biết yêu đâu <span class="github-emoji"><span>😠</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f620.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>!”</em></em> vì đối với các lão yêu là phải yêu giống thế hệ của các lão, yêu với thư tay với nhớ nhung đợi chờ và với hàng đống những thứ khác mà mình không hiểu nổi.</p>
+<p>Với những người trẻ như chúng ta có vẻ tình yêu sẽ được kể lại bằng tinder, bằng những buổi hẹn hò, những lần trà sữa, xem phim và những lần quan hệ, chia tay chóng vánh nhưng đối với những người giống như mấy lão bạn mình mà mình xin phép gom lại là những người ở thế hệ trước thì với những mối quan hệ như chúng ta không được gọi là yêu mà chỉ gọi là những mối quan hệ thoáng qua. </p>
+<p>Nhưng thật tâm với tụi mình thì ngay cái lúc trong mối quan hệ đó, tình yêu của tụi mình là thật, quan tâm với nhau là thật, lo lắng cho nhau là thật và chuyện muốn được đồng cảm với nhau cả về thể xác lẫn tinh thần với nhau là thật, ở như thế mình gọi là yêu, vậy thôi.</p>
+<h2 id="Chuyen-cai-dau-mo"><a href="#Chuyen-cai-dau-mo" class="headerlink" title="Chuyện cái đầu mở:"></a>Chuyện cái đầu mở:</h2><p>Lại chuyện ở trên, vấn đề chỉ cần nhìn vào là đã thấy ra cái vấn đề ở đây là tôi mấy lão ấy xung đột về khái niệm, để giải quyết vấn đề thì chỉ cần chia sẻ khái niệm của nhau với nhau là xong nhưng chuyện không dễ như vậy vì những khái niệm cần thay đổi ở đây là khái niệm về tình yêu, một khái niệm cốt lõi xây dựng nên con người và mình và những lão ấy đều không thể chấp nhận được khái niệm của đối phương về tình yêu. À, mấy lão này trên thương trường hay còn đường sự nghiệp đều là lão làng, chuyện mở đầu với mấy lão đó là chuyện chắc chắn nhưng vẫn không chấp nhận được thay đổi khái niệm cốt lõi của bản thân.</p>
+<p>Kể thêm chuyện cái đầu mở, có một lão đồng nghiệp của mình, tuổi cũng trạc tầm tứ tuần và bây giờ cũng đã có vợ con nhưng sau một lần lão bị cắm sừng thì bây giờ trong tâm trí của lão luôn nghĩ rằng với bất cứ mối quan hệ nào thì việc bị phản bội chỉ là việc sớm muộn. Lão luôn nói là lão luôn open-minded nhưng mỗi khi lão gặp bất cứ “đứa trẻ” nào lão cũng nhồi nhét cái tư tưởng độc hại của lão vào trong đầu óc của mấy đứa mà ngay từ đầu đã có định kiến với tính yêu. Mỗi khi như thế nếu có mình ngồi nhậu cùng mình luôn nói là chuyện của lão chỉ là chuyện có xác suất rất nhỏ và lão không may mắn nên mới bị như vậy, mình cũng kể về những người đã từng đi qua đời mình họ đều tốt đẹp ở một góc nào đó, dạy thêm cho mình những bài học nào đó nhưng lão không nhìn thấy, lão chỉ thấy việc lão yêu sâu đậm thế nào và bị cắm sừng ra sao.</p>
+<h2 id="Ly-thuyet-tro-choi"><a href="#Ly-thuyet-tro-choi" class="headerlink" title="Lý thuyết trò chơi"></a>Lý thuyết trò chơi</h2><p>Về cái <strong>game theory</strong> thì chắc chắn là ai từng sống trên đời này chắc đều từng nghe đến và cái khái niệm <strong>cân bằng nash</strong> hay <strong>nash equilibrium</strong> là một cái gì đó nổi tiếng hơn cả, và ở phạm vi bài viết này mình cũng không đề cập đến khái niệm hay trình bày hoàn cảnh ra đời của tác giả làm gì, mình chỉ muốn nói <strong>cân bằng nash</strong> trong một mối quan hệ yêu đương ở người trẻ thế hệ chúng ta và thế hệ trước đã có một sự thay đổi không hề nhỏ.</p>
+<p>Vốn dĩ tình yêu nên được xây dựng từ niềm tin, sự tin tưởng lẫn nhau vốn là cốt lõi của tình yêu nhưng mình nhận ra trong các quan hệ của chính mình của người yêu càng ngày<br>càng không thể có được niềm tin đó, có thể mình của những năm 17 tuổi đã rất tin tưởng vào tình yêu nhưng càng về sau, đọc được nhiều bài viết tào lao trên mạng, của NEU cfs, của Rãnh 14,… khiến cho niềm tin của chúng ta càng ngày càng ít hơn.</p>
+<p>Sự khác nhau lớn nhất của thế hệ chúng ta và thế hệ trước có lẽ là: Mạng xã hội và Internet  </p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="center">KHÔNG NGHI NGỜ</th>
+<th align="right">NGHI NGỜ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">KHÔNG NGHI NGỜ</td>
+<td align="center">NAM+, NỮ+</td>
+<td align="right">NAM+, NỮ-</td>
+</tr>
+<tr>
+<td align="left">NGHI NGỜ</td>
+<td align="center">NAM-, NỮ+</td>
+<td align="right">NAM-, NỮ-</td>
+</tr>
+</tbody></table>
+<p>Nhìn vào bảng trên chắc chắn ai cũng nhìn ra trạng thái tốt nhất là cả nam và nữ đều nên tin tưởng nhau và cố gắng đừng phản bội người còn lại, những người trẻ chúng ta lại luôn đặt mọi thứ lên bàn cân và từ đó luôn tạo ra một trạng thái cân bằng nash là <em><strong>NAM-, NỮ-</strong></em>, thật sự buồn cười.</p>
+<p>Vậy tại sao mình lại nói tới việc thế hệ trẻ và thế hệ trước chúng ta có sự khác biệt khi đưa lên <strong>bàn cân bash</strong>, có lẽ các bạn để ý mình chưa đề cập đến <strong>rational-con người duy lý</strong> tức khi bước vào cuộc chơi, lựa chọn chiến lược nào phải dựa trên nguyên tắc: phải dựa trên vấn đề giá trị hay ích lợi (pay off). Và rất tiếc ở những người thế hệ mấy lão bạn mình lại không được tuân thủ trong tình yêu, vì tình yêu là chuyện của trái tim. Nên ở thế hệ các lão, trạng thái <em><strong>NAM+, NỮ+</strong></em> lại là trạng thái cân bằng.</p>
+<blockquote>
+<p>Tất nhiên mô hình này đã được mình đơn giản hóa rất nhiều. Trong lý thuyết kinh tế, để nhận diện hành vi đối thủ tốt hơn, mình sẽ phải xác định lợi ích gắn liền với tính cách của bạn và đối thủ. Còn ở đây, lựa chọn của bạn hay người còn lại trong điều kiện là không chắc chắn, và tin tưởng hay không tin tưởng còn phù thuộc vào tính cách của mỗi người, khẩu vị rủi ro…</p>
+</blockquote>
+<p style="text-align: right">A note for 25</p>
+<!-- <p style="text-align: right">Một ghi chú cho tuổi 25 đầy sóng và gió</p> -->
+
+<p style="text-align: right;font-style: italic;">Khoan Huynh</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>f97</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://f97.xyz/chuyen-yeu-chuyen-open-minded-va-ly-thuyet-tro-choi.html">https://f97.xyz/chuyen-yeu-chuyen-open-minded-va-ly-thuyet-tro-choi.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <script src="https://giscus.app/client.js"
+        data-repo="f97/f97.github.io"
+        data-repo-id="R_kgDOIXlxcQ"
+        data-category="Q&A"
+        data-category-id="DIC_kwDOIXlxcc4CSy5E"
+        data-mapping="url"
+        data-strict="1"
+        data-reactions-enabled="0"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="vi"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+<div class="giscus" style="margin-top: 14px;"></div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/linh-tinh/"># linh tinh</a>
+                        
+                            <a href="/tags/life/"># life</a>
+                        
+                            <a href="/tags/love/"># love</a>
+                        
+                    
+                    <a href="/tags"># all-tags</a>
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© f97 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/f97/chic" target="_blank">@f97/chic</a></span>
+    </div>
+</footer>
+
+    </div>
+<!-- hexo injector body_end start --><script>
+// Check that service workers are supported
+if ('serviceWorker' in navigator) {
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+<!-- hexo injector body_end end --></body>
+
+</html>
